@@ -10,6 +10,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ChatWidget from "@/components/ChatWidget";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
+import EnquiryPopup from "@/components/EnquiryPopup";
 
 import Home from "@/pages/Home";
 import Projects from "@/pages/Projects";
@@ -81,6 +82,7 @@ function PublicShell({ children }) {
       <Footer company={company} />
       <WhatsAppFloat />
       <ChatWidget />
+      <EnquiryPopup />
     </>
   );
 }

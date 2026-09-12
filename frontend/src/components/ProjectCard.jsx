@@ -27,7 +27,7 @@ export default function ProjectCard({ project, index = 0 }) {
             {project.status}
           </span>
           {project.is_hot_selling && (
-            <span className="text-[0.6rem] font-mono uppercase tracking-[0.2em] px-3 py-1.5 border border-[#D4AF37]/50 text-[#F3E5AB] bg-[#D4AF37]/10 backdrop-blur-md">Hot Selling</span>
+            <span className="hot-badge text-[0.6rem] font-mono uppercase tracking-[0.2em] px-3 py-1.5 backdrop-blur-md">Hot Selling</span>
           )}
         </div>
         <div className="absolute bottom-4 left-4 right-4">

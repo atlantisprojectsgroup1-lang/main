@@ -38,7 +38,6 @@ export default function Home() {
   const [company, setCompany] = useState(null);
   const [blog, setBlog] = useState([]);
   const [tab, setTab] = useState("ALL");
-  const [search, setSearch] = useState({ city: "", type: "", budget: "" });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -48,21 +47,12 @@ export default function Home() {
   }, []);
 
   const filtered = tab === "ALL" ? projects : projects.filter((p) => p.status === tab);
+  const hotProjects = projects.filter((p) => p.is_hot_selling);
   const coverItems = projects.filter((p) => p.featured).map((p) => ({
     key: p.id, image: p.images?.[0]?.url || HERO_BG, title: p.name,
     eyebrow: p.status, subtitle: `${p.locality}, ${p.city} · ${p.price_label}`, slug: p.slug,
   }));
   const stats = company?.stats || {};
-  const cities = [...new Set(projects.map((p) => p.city).filter(Boolean))];
-
-  const doSearch = (e) => {
-    e.preventDefault();
-    const params = new URLSearchParams();
-    if (search.city) params.set("city", search.city);
-    if (search.type) params.set("category", search.type);
-    if (search.budget) params.set("max_budget", search.budget);
-    navigate(`/projects?${params.toString()}`);
-  };
 
   const jsonLd = {
     "@context": "https://schema.org", "@type": "RealEstateAgent",
@@ -81,6 +71,7 @@ export default function Home() {
         <div className="absolute inset-0">
           <img src={HERO_BG} alt="ATLANTIS landmark residences at night" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/70 to-[#050B14]/30" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-[#C8102E]/25 via-transparent to-transparent" />
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-36 pb-16">
           <motion.p {...fade} className="eyebrow mb-5">Premium Residences · Chandigarh Tricity</motion.p>
@@ -92,25 +83,10 @@ export default function Home() {
             Landmark addresses across Zirakpur, Mohali & Aerocity. One uncompromising standard — low-density, RERA registered, built to last.
           </motion.p>
 
-          <motion.form {...fade} transition={{ ...fade.transition, delay: 0.3 }} onSubmit={doSearch}
-            data-testid="hero-search-form" className="mt-10 glass-card p-3 flex flex-col sm:flex-row gap-3 max-w-3xl">
-            <select data-testid="hero-filter-city-select" value={search.city} onChange={(e) => setSearch({ ...search, city: e.target.value })} className="flex-1 px-4 py-3 text-sm">
-              <option value="">City — All</option>
-              {cities.map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
-            <select data-testid="hero-filter-type-select" value={search.type} onChange={(e) => setSearch({ ...search, type: e.target.value })} className="flex-1 px-4 py-3 text-sm">
-              <option value="">Type — All</option>
-              <option value="RESIDENTIAL">Residential</option>
-              <option value="COMMERCIAL">Commercial</option>
-            </select>
-            <select data-testid="hero-filter-budget-select" value={search.budget} onChange={(e) => setSearch({ ...search, budget: e.target.value })} className="flex-1 px-4 py-3 text-sm">
-              <option value="">Budget — Any</option>
-              <option value="15000000">Up to ₹1.5 Cr</option>
-              <option value="20000000">Up to ₹2 Cr</option>
-              <option value="30000000">Up to ₹3 Cr</option>
-            </select>
-            <button data-testid="hero-search-submit-btn" type="submit" className="gold-btn justify-center">Search</button>
-          </motion.form>
+          <motion.div {...fade} transition={{ ...fade.transition, delay: 0.3 }} className="mt-10 flex flex-wrap gap-4">
+            <button data-testid="hero-enquire-btn" onClick={() => window.dispatchEvent(new Event("open-enquiry-popup"))} className="gold-btn">Enquire Now</button>
+            <Link to="/projects" data-testid="hero-explore-link" className="outline-btn">Explore Residences</Link>
+          </motion.div>
 
           <motion.div {...fade} transition={{ ...fade.transition, delay: 0.4 }} className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-3xl">
             {[
@@ -142,6 +118,27 @@ export default function Home() {
           </div>
           <Coverflow items={coverItems} testid="hero-3d-coverflow-carousel"
             onSelect={(item) => navigate(`/projects/${item.slug}`)} />
+        </section>
+      )}
+
+      {/* HOT SELLING */}
+      {hotProjects.length > 0 && (
+        <section data-testid="hot-selling-section" className="py-20 lg:py-24 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(200,16,46,0.15),transparent_55%)]" />
+          <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[#C8102E] via-[#C8102E]/40 to-transparent" />
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p className="eyebrow mb-3" style={{ color: "#F87171" }}>Featured · Hot Selling</p>
+            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal tracking-tight mb-12">
+              Hot Selling <span className="crimson-text italic">Properties</span>
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {hotProjects.map((p, i) => (
+                <motion.div key={p.id} {...fade} transition={{ ...fade.transition, delay: i * 0.08 }}>
+                  <ProjectCard project={p} index={i} />
+                </motion.div>
+              ))}
+            </div>
+          </div>
         </section>
       )}
 
