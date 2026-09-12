@@ -79,7 +79,7 @@ export default function ChatWidget() {
       </button>
 
       {open && (
-        <div data-testid="ai-concierge-chat-modal" className="fixed bottom-24 right-4 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-96 h-[480px] glass-card flex flex-col overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.6)]">
+        <div data-testid="ai-concierge-chat-modal" className="fixed bottom-[10.5rem] right-4 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-96 h-[480px] glass-card flex flex-col overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.6)]">
           <div className="flex items-center justify-between px-5 py-4 border-b border-[#C5A059]/20 bg-[#0A1322]/80">
             <div>
               <p className="font-serif text-lg gold-text">ATLANTIS Concierge</p>
