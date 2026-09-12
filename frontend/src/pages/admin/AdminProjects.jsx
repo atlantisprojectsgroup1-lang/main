@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { Plus, Pencil, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import api, { formatApiError } from "../../lib/api";
+import ImageCropUpload from "../../components/ImageCropUpload";
 
 const EMPTY = {
   name: "", slug: "", tagline: "", description: "", status: "UPCOMING", category: "RESIDENTIAL",
   city: "", locality: "", address: "", rera_number: "", possession: "", price_label: "Price on Request",
   price_from: "", total_towers: "", total_area: "", floors: "", featured: false, is_hot_selling: false,
   sort_order: 10, project_type: [], images: [], configs: [], amenities: [], specifications: [], landmarks: [],
-  seo: { title: "", description: "", keywords: "" }, placeholders: [],
+  seo: { title: "", description: "", keywords: "" }, placeholders: [], logo: "",
 };
 
 function toText(v) { return (v || []).map((x) => (typeof x === "string" ? x : x.url || x.name || x.config || JSON.stringify(x))).join("\n"); }
@@ -112,6 +113,21 @@ export default function AdminProjects() {
               <input data-testid="editor-slug-input" placeholder="Slug (auto if empty)" value={editing.slug} onChange={(e) => setEditing({ ...editing, slug: e.target.value })} className="px-4 py-3 text-sm" />
               <input data-testid="editor-tagline-input" placeholder="Tagline" value={editing.tagline} onChange={(e) => setEditing({ ...editing, tagline: e.target.value })} className="px-4 py-3 text-sm sm:col-span-2" />
               <textarea data-testid="editor-description-input" placeholder="Description" rows={4} value={editing.description} onChange={(e) => setEditing({ ...editing, description: e.target.value })} className="px-4 py-3 text-sm sm:col-span-2" />
+              <div className="sm:col-span-2">
+                <label className="text-[0.62rem] font-mono uppercase tracking-[0.2em] text-slate-400 block mb-2">Project Logo — PNG transparent · 512×512 standard</label>
+                <div className="flex items-center gap-4 flex-wrap">
+                  {editing.logo ? (
+                    <img src={editing.logo} alt="Project logo" data-testid="editor-logo-preview" className="h-16 w-16 object-contain border border-[#C5A059]/30 bg-[#0A1322] p-1.5" />
+                  ) : (
+                    <div data-testid="editor-logo-preview" className="h-16 w-16 border border-dashed border-slate-700 flex items-center justify-center text-slate-600 text-[0.5rem] font-mono text-center px-1">NO LOGO</div>
+                  )}
+                  <ImageCropUpload testidPrefix="editor-logo" onUploaded={(url) => setEditing({ ...editing, logo: url })} />
+                  <input data-testid="editor-logo-url-input" placeholder="…or paste a logo URL" value={editing.logo || ""} onChange={(e) => setEditing({ ...editing, logo: e.target.value })} className="flex-1 min-w-[200px] px-4 py-3 text-xs font-mono" />
+                  {editing.logo && (
+                    <button type="button" data-testid="editor-logo-remove-btn" onClick={() => setEditing({ ...editing, logo: "" })} className="text-[0.62rem] font-mono uppercase tracking-wider text-slate-500 hover:text-red-400 transition-colors">Remove</button>
+                  )}
+                </div>
+              </div>
               <select data-testid="editor-status-select" value={editing.status} onChange={(e) => setEditing({ ...editing, status: e.target.value })} className="px-4 py-3 text-sm">
                 {["ONGOING", "UPCOMING", "DELIVERED"].map((s) => <option key={s}>{s}</option>)}
               </select>

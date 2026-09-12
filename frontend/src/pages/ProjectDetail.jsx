@@ -112,6 +112,10 @@ export default function ProjectDetail() {
         <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/50 to-[#050B14]/20" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-14 w-full">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+            {project.logo && (
+              <img src={project.logo} alt={`${project.name} logo`} data-testid="project-detail-logo"
+                className="h-16 w-16 object-contain mb-5 drop-shadow-[0_4px_14px_rgba(0,0,0,0.8)]" />
+            )}
             <div className="flex items-center gap-3 mb-4">
               <span className="text-[0.62rem] font-mono uppercase tracking-[0.2em] px-3 py-1.5 border border-[#D4AF37]/50 text-[#F3E5AB] bg-[#050B14]/60 backdrop-blur-md">{project.status}</span>
               <span className="text-[0.62rem] font-mono uppercase tracking-[0.2em] text-slate-300">{project.category}</span>

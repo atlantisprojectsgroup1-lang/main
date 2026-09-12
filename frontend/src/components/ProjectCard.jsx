@@ -30,6 +30,10 @@ export default function ProjectCard({ project, index = 0 }) {
             <span className="hot-badge text-[0.6rem] font-mono uppercase tracking-[0.2em] px-3 py-1.5 backdrop-blur-md">Hot Selling</span>
           )}
         </div>
+        {project.logo && (
+          <img src={project.logo} alt={`${project.name} logo`} data-testid={`project-logo-${project.slug}`}
+            className="absolute top-4 right-4 h-11 w-11 object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]" />
+        )}
         <div className="absolute bottom-4 left-4 right-4">
           <p className="text-[0.65rem] font-mono uppercase tracking-[0.25em] text-[#E6C687]/90 mb-1">{project.category}</p>
           <h3 className="font-serif text-2xl text-slate-100 leading-tight">{project.name}</h3>

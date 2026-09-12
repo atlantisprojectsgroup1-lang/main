@@ -512,6 +512,24 @@ async def admin_get_company(user=Depends(get_current_user)):
     return await db.company.find_one({"id": "company"}, {"_id": 0}) or {}
 
 
+class UploadIn(BaseModel):
+    data_url: str
+
+
+@api.post("/admin/upload")
+async def admin_upload(body: UploadIn, user=Depends(get_current_user)):
+    import base64
+    m = re.match(r"^data:image/(png|jpeg|jpg|webp);base64,(.+)$", body.data_url or "", re.S)
+    if not m:
+        raise HTTPException(status_code=422, detail="Only PNG/JPEG/WebP images are accepted.")
+    raw = base64.b64decode(m.group(2))
+    if len(raw) > 5 * 1024 * 1024:
+        raise HTTPException(status_code=413, detail="Image exceeds the 5 MB limit.")
+    ext = "png" if m.group(1) == "png" else ("jpg" if m.group(1) in ("jpeg", "jpg") else "webp")
+    name = f"{new_id()}.{ext}"
+    (ROOT_DIR / "uploads" / name).write_bytes(raw)
+    return {"url": f"/api/uploads/{name}"}
+
 @api.put("/admin/company")
 async def admin_put_company(company: dict, user=Depends(get_current_user)):
     company.pop("_id", None)
@@ -644,6 +662,11 @@ async def shutdown_db_client():
 
 
 app.include_router(api)
+
+UPLOAD_DIR = ROOT_DIR / "uploads"
+UPLOAD_DIR.mkdir(exist_ok=True)
+from fastapi.staticfiles import StaticFiles
+app.mount("/api/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
 
 app.add_middleware(
     CORSMiddleware,
