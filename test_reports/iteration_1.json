@@ -1,0 +1,38 @@
+{
+  "summary": "First full test pass for ATLANTIS platform. Backend: 29/29 pytest cases passed (public endpoints, project CRUD, leads with AI scoring, admin auth, JWT protection, wrong-password rejection, /api/chat SSE streaming with gpt-5.4 emitting tokens, /api/admin/ai/generate SEO output, settings roundtrip visible on /api/settings/public, sitemap). Frontend: 16/16 Playwright checks passed - home hero + search-with-query-params to /projects, projects filter + empty state, project detail (subnav, EMI calc, inventory table), enquiry form (invalid phone rejected, valid phone -> success message), WhatsApp float link with correct wa.me/919607896078 + updated prefill message, AI Concierge chatbot streams response referencing Atlantis/BHK/Zirakpur, admin auth (logged-out redirect, wrong-password error, correct login to dashboard), dashboard recent-leads table, admin projects table shows 6 seeded projects, CRM kanban board loads, AI Studio SEO generation produces >50 char output, settings page renders. No critical issues found.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/projects (search filter)", "issue": "When both search AND max_budget query params are supplied, the second $or overwrites the first because the code assigns q['$or'] twice. Not exercised by UI in current flow but is a latent bug — should use $and-merge."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "(Optional/low priority) Fix /api/projects query builder so that search + max_budget can coexist (merge $or clauses via $and instead of overwriting q['$or'])."
+  ],
+  "critical_code_review_comments": [
+    "server.py list_projects: q['$or'] is set twice when both search and max_budget are provided; the second assignment silently overrides the first. Wrap in $and to preserve both.",
+    "server.py cookie is set with SameSite=None + Secure=True which is correct for cross-site preview URL; browsers on http would drop it. Fine for prod HTTPS.",
+    "server.py login_attempts uses IP+email identifier — behind a proxy behind Kubernetes ingress request.client.host will often be the ingress IP, so lockout is effectively per-email globally. Acceptable but note real IP should be pulled from X-Forwarded-For for accuracy.",
+    "server.py is a single ~640 line file — approaching the 700 line threshold; consider splitting admin/ai/public routers into modules soon.",
+    "ai_score_lead is awaited inline in POST /api/leads which adds ~2-5s latency to visitor form submission. Consider firing it as background task (asyncio.create_task) and returning immediately.",
+    "Sitemap endpoint returns text/xml with newlines only — fine, but response is not cached; low-priority optimisation."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py (new)"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "admin: atlantisprojectsgroup@gmail.com / Atlantis@2026 (verified working, super_admin role)",
+  "seed_data_creation": "Backend tests create/delete TEST_ prefixed projects and leads. Two TEST_ leads created during frontend enquiry-form testing remain in the CRM and will show under admin > CRM (name starts with 'TEST User').",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All primary flows green on first pass. Deep-dive areas not exercised: 3D coverflow keyboard nav, gallery lightbox open/close (element data-testid=gallery-lightbox exists but not opened during test), FAQ accordion expansion, status-tabs filtering on home, milestones timeline scroll, blog post detail page rendering, portfolio filter to DELIVERED only, mobile viewport hamburger menu, brute-force lockout (5 fails). The /api/projects search+max_budget $or overwrite bug is latent — worth a targeted test if UI adds combined filtering. AI features use gpt-5.4 via Emergent LLM key; latency ~5-15s for /api/chat and ~5-10s for /api/admin/ai/generate. Admin login uses JWT Bearer token (returned in body) as well as httpOnly cookie."
+}

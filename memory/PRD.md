@@ -1,0 +1,35 @@
+# ATLANTIS — Real Estate Developer & Promoter Platform — PRD
+
+## Original Problem Statement
+Production-ready, SEO-optimized, AI-assisted platform for ATLANTIS (real estate developer & promoter, Chandigarh Tricity) with public site, admin CMS, CRM, lead automation, AI features and content synced from atlantisprojects.in, atlantisgroup.in, atlantisgroup.info. User approved React + FastAPI + MongoDB stack (SEO via react-helmet-async, JSON-LD, sitemap, robots.txt instead of Next.js SSR).
+
+## User Personas
+- HNI / luxury homebuyer browsing projects, comparing configs, enquiring
+- Investor / channel partner
+- Super Admin (atlantisprojectsgroup@gmail.com) managing CMS + CRM
+- Sales team working the lead pipeline
+
+## Architecture
+- Frontend: React 19 + Tailwind + framer-motion + react-helmet-async (SEO) + recharts. Routes: /, /projects, /projects/:slug, /portfolio, /about, /blog, /blog/:slug, /contact, /admin/* (login, dashboard, projects CMS, CRM kanban, AI studio, settings)
+- Backend: FastAPI + MongoDB (motor), JWT cookie/bearer auth with bcrypt + brute-force lockout, SSE-streamed AI chat (Emergent LLM key, gpt-5.4), AI lead scoring (background task), AI content studio
+- Seeded from real scraped data: 6 projects (Three Sixty, The Marq, Central Park, Grand, Heights, at Wave), company profile, 5 leadership profiles, 10 design partners, 3 FAQs, 6 blog posts, Grand specs/amenities/landmarks
+
+## Implemented (June 12, 2026)
+- Public site: cinematic hero + quick search, animated stats, 3D coverflow showcase (auto-scroll, drag, keyboard, infinite loop), status tabs, category tiles, why-ATLANTIS, milestones, blog teasers, enquiry CTAs
+- Projects listing: URL-persisted filters (status/category/city/config/budget/search), empty state
+- Project detail: sticky subnav, 3D showcase, gallery + lightbox, inventory/price table, EMI calculator, RERA block, landmarks, FAQs, similar projects, enquiry form, JSON-LD
+- About, Delivered Portfolio, Blog (+detail), Contact pages
+- Admin: JWT login (super_admin), dashboard (funnel/score/source charts + recent leads), Projects CRUD editor, CRM kanban (7 stages, drawer, notes, AI rescore), AI Content Studio (description/SEO/alt/WhatsApp/blog), Settings (brand + integration IDs)
+- AI: concierge chatbot (RAG over project DB, SSE streaming), lead scoring (HOT/WARM/COLD, background), content studio
+- SEO: per-page meta/OG/canonical, JSON-LD (RealEstateAgent/Residence/Article), /api/sitemap.xml, robots.txt
+- Integration config fields: WhatsApp number/prefill (float button LIVE via wa.me), Cloud API token, Meta Pixel, GA4 (auto-injects when ID saved), GTM, Cloudinary, SMTP
+
+## Test Status
+- Iteration 1: backend 29/29 pytest, frontend 16/16 Playwright — all green
+- Fixed post-test: combined search+budget filter ($and merge); lead scoring moved to background (instant form response)
+- TEST_ prefixed leads from testing remain in CRM (harmless)
+
+## Backlog (Prioritized)
+- P0: Wire live WhatsApp Cloud API (auto-reply, brochure delivery, OTP) once user pastes credentials; paste Meta Pixel/GA4/GTM IDs in Settings
+- P1: Map view on /projects; project Compare (up to 4); media upload via object storage + gated PDF downloads; landing pages builder /lp/<slug>; testimonials/FAQ/blog admin UI; inventory availability matrix; 301 redirect manager
+- P2: Meta/Google lead-ad webhooks, drip campaigns, round-robin assignment, channel partner portal, NRI corner, careers, multilingual (hi), voice search, CSV import/export, version history, role management UI

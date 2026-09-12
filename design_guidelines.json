@@ -1,0 +1,211 @@
+{
+  "project_name": "ATLANTIS - Ultra-Premium Real Estate Developer & Promoter Platform",
+  "app_type": "hybrid_fullstack",
+  "target_audience": "High-Net-Worth Individuals (HNWIs), Luxury Homebuyers, Commercial Real Estate Investors, Corporate Tenants, Real Estate Brokers",
+  "emotional_tone": "Cinematic Luxury, Architectural Prestige, Timeless Elegance, Uncompromising Quality, Financial Authority",
+  "archetype": "LUXURY & PERFORMANCE PRO (Deep Obsidian Navy + Gold-Champagne Accents)",
+  "theme": {
+    "default_mode": "dark",
+    "toggle_enabled": true,
+    "dark_palette": {
+      "bg_primary": "#050B14",
+      "bg_secondary": "#0A1322",
+      "bg_surface": "#101B2E",
+      "bg_surface_glass": "rgba(16, 27, 46, 0.65)",
+      "border_gold": "#C5A059",
+      "border_gold_subtle": "rgba(197, 160, 89, 0.25)",
+      "border_subtle": "rgba(255, 255, 255, 0.08)",
+      "text_primary": "#F8FAFC",
+      "text_secondary": "#94A3B8",
+      "text_gold": "#E6C687",
+      "text_gold_bright": "#F3E5AB",
+      "accent_gold": "#D4AF37",
+      "accent_gold_hover": "#E5C07B",
+      "accent_emerald": "#10B981",
+      "overlay_dark": "rgba(5, 11, 20, 0.75)"
+    },
+    "light_palette": {
+      "bg_primary": "#F9F9FB",
+      "bg_secondary": "#F1F5F9",
+      "bg_surface": "#FFFFFF",
+      "bg_surface_glass": "rgba(255, 255, 255, 0.8)",
+      "border_gold": "#B8860B",
+      "border_gold_subtle": "rgba(184, 134, 11, 0.3)",
+      "border_subtle": "rgba(0, 0, 0, 0.08)",
+      "text_primary": "#0F172A",
+      "text_secondary": "#475569",
+      "text_gold": "#8B6508",
+      "accent_gold": "#C5A059",
+      "accent_gold_hover": "#9A7B38"
+    }
+  },
+  "typography": {
+    "font_family_display": "'Cormorant Garamond', 'Playfair Display', Georgia, serif",
+    "font_family_sans": "'Plus Jakarta Sans', 'Outfit', 'Inter', sans-serif",
+    "font_family_mono": "'JetBrains Mono', 'Space Mono', monospace",
+    "google_fonts_embed": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap",
+    "scale": {
+      "h1_hero": "text-4xl sm:text-5xl lg:text-6xl font-serif font-light tracking-tight leading-[1.1]",
+      "h2_section": "text-3xl sm:text-4xl lg:text-5xl font-serif font-normal tracking-tight leading-tight",
+      "h3_card": "text-xl sm:text-2xl font-serif font-medium leading-snug",
+      "body_lead": "text-lg sm:text-xl font-sans font-light text-slate-300 leading-relaxed",
+      "body_standard": "text-sm sm:text-base font-sans font-normal text-slate-400 leading-relaxed",
+      "label_eyebrow": "text-xs font-mono uppercase tracking-[0.25em] text-amber-400/90 font-medium",
+      "caption_mono": "text-xs font-mono text-slate-400"
+    }
+  },
+  "layout_and_spacing": {
+    "container_max_width": "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
+    "section_padding": "py-20 lg:py-32",
+    "card_padding": "p-6 sm:p-8",
+    "grid_modes": {
+      "tetris_bento": "grid grid-cols-1 md:grid-cols-8 lg:grid-cols-12 gap-6 lg:gap-8",
+      "projects_grid": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8",
+      "dashboard_kanban": "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4"
+    }
+  },
+  "visual_enhancers": {
+    "glassmorphism_card": "backdrop-blur-xl bg-[#101B2E]/75 border border-[#C5A059]/20 shadow-[0_8px_32px_rgba(0,0,0,0.37)] hover:border-[#D4AF37]/50 transition-all duration-300",
+    "gold_gradient_text": "bg-gradient-to-r from-[#F3E5AB] via-[#D4AF37] to-[#AA7C11] bg-clip-text text-transparent",
+    "gold_button_primary": "relative group overflow-hidden bg-gradient-to-r from-[#C5A059] via-[#D4AF37] to-[#9A7B38] text-[#050B14] font-medium px-7 py-3.5 rounded-none tracking-wider text-xs uppercase shadow-[0_0_20px_rgba(212,175,55,0.25)] hover:shadow-[0_0_30px_rgba(212,175,55,0.45)] transition-all duration-300",
+    "outline_gold_button": "border border-[#D4AF37]/60 text-[#E6C687] hover:bg-[#D4AF37]/10 px-6 py-3 rounded-none text-xs uppercase tracking-widest font-mono transition-all duration-300",
+    "tracing_gold_border": "border border-[#C5A059]/30 hover:border-[#D4AF37] transition-all duration-500 hover:shadow-[0_0_25px_rgba(212,175,55,0.15)]",
+    "overlay_gradient": "bg-gradient-to-t from-[#050B14] via-[#050B14]/60 to-transparent"
+  },
+  "key_components_to_build": [
+    {
+      "name": "Header & Nav Bar",
+      "description": "Sticky dark glass navbar (`backdrop-blur-xl bg-[#050B14]/80`) with ATLANTIS crest, links for Projects, Portfolio, About, RERA Verification, Contact, Theme Toggle, and VIP Enquiry CTA button.",
+      "test_ids": {
+        "nav_container": "header-navbar",
+        "logo_link": "nav-logo-link",
+        "link_projects": "nav-link-projects",
+        "link_about": "nav-link-about",
+        "link_portfolio": "nav-link-portfolio",
+        "link_contact": "nav-link-contact",
+        "link_admin": "nav-link-admin",
+        "cta_enquire": "nav-cta-enquire-button",
+        "theme_toggle": "nav-theme-toggle"
+      }
+    },
+    {
+      "name": "Cinematic Hero & 3D Coverflow Showcase",
+      "description": "Hero section with subtle background motion overlay, stats counter (e.g. $2.4B Delivered Portfolio, 18+ Architectural Awards, 99.4% On-time Completion, 12 Premium Landmarks), Quick Search bar (City, Property Type, BHK, Budget), and interactive 3D Coverflow card carousel.",
+      "test_ids": {
+        "hero_section": "hero-section",
+        "hero_title": "hero-main-title",
+        "hero_stat_portfolio": "hero-stat-portfolio-val",
+        "hero_stat_awards": "hero-stat-awards-val",
+        "hero_search_city": "hero-filter-city-select",
+        "hero_search_type": "hero-filter-type-select",
+        "hero_search_budget": "hero-filter-budget-select",
+        "hero_search_btn": "hero-search-submit-btn",
+        "coverflow_carousel": "hero-3d-coverflow-carousel"
+      }
+    },
+    {
+      "name": "Featured Projects & Status Filter",
+      "description": "Filter tabs (All, Ongoing, Delivered, Upcoming) showing luxury project cards with status badges, RERA registration numbers, starting price tag, location, BHK spec, and quick 'Explore Landmark' button.",
+      "test_ids": {
+        "tab_all": "projects-tab-all",
+        "tab_ongoing": "projects-tab-ongoing",
+        "tab_delivered": "projects-tab-delivered",
+        "tab_upcoming": "projects-tab-upcoming",
+        "project_card_prefix": "project-card-",
+        "project_view_btn_prefix": "project-view-btn-"
+      }
+    },
+    {
+      "name": "Category Tiles & Living Amenities",
+      "description": "Editorial grid highlighting Ultra-Luxury Residential Villas, High-Rise Penthouses, Commercial Headquarters, and Prime Waterfront Masterplans with interactive hover elevation effect.",
+      "test_ids": {
+        "category_residential": "cat-residential-tile",
+        "category_commercial": "cat-commercial-tile",
+        "category_industrial": "cat-industrial-tile",
+        "category_penthouses": "cat-penthouses-tile"
+      }
+    },
+    {
+      "name": "Project Detail View Page",
+      "description": "Complete detail view with sticky sub-nav bar (Overview, 3D Showcase, Gallery, Amenities, Specifications, Floor Plans, Location, RERA, Enquire), high-resolution lightbox gallery, interactive interactive floor plan switcher (2BHK, 3BHK, Sky Penthouse), Price matrix table with cost breakdown calculator, direct PDF Brochure download modal, and direct VIP Private Tour booking form.",
+      "test_ids": {
+        "detail_sticky_subnav": "project-detail-subnav",
+        "subnav_overview": "detail-nav-overview",
+        "subnav_gallery": "detail-nav-gallery",
+        "subnav_floorplans": "detail-nav-floorplans",
+        "subnav_amenities": "detail-nav-amenities",
+        "subnav_price": "detail-nav-price",
+        "subnav_enquire": "detail-nav-enquire",
+        "brochure_download_btn": "project-download-brochure-btn",
+        "floorplan_selector_prefix": "floorplan-select-",
+        "enquiry_form_submit": "project-enquiry-form-submit-btn"
+      }
+    },
+    {
+      "name": "Company History & Milestones Timeline",
+      "description": "Interactive timeline detailing ATLANTIS's legacy since 2008, architect collaborations (Foster & Partners style), sustainability certifications (LEED Platinum), and delivered sq. ft. metrics.",
+      "test_ids": {
+        "timeline_section": "company-timeline-section",
+        "milestone_year_prefix": "milestone-year-"
+      }
+    },
+    {
+      "name": "Admin Panel & CRM Lead Pipeline",
+      "description": "Full Admin CMS & CRM Dashboard accessible at `/admin`. Includes Kanban lead management board (New Lead, Site Visit Scheduled, Negotiation, Contract Sent, Closed Won), Lead details drawer, Project CRUD editor with status toggle, price updater, and Recharts performance analytics.",
+      "test_ids": {
+        "admin_dashboard_root": "admin-dashboard-container",
+        "admin_nav_crm": "admin-nav-crm-pipeline",
+        "admin_nav_projects": "admin-nav-projects-crud",
+        "admin_nav_analytics": "admin-nav-analytics",
+        "kanban_column_prefix": "kanban-col-",
+        "lead_card_prefix": "lead-card-",
+        "add_project_btn": "admin-add-project-btn",
+        "save_project_btn": "admin-save-project-btn"
+      }
+    },
+    {
+      "name": "Persistent Floating Tools & AI Concierge",
+      "description": "WhatsApp VIP Direct Chat float button and 'ATLANTIS AI Luxury Concierge' chatbot drawer supporting instant queries on unit availability, pricing, site visit scheduling, and brochure requests.",
+      "test_ids": {
+        "whatsapp_float_btn": "whatsapp-floating-btn",
+        "ai_concierge_toggle_btn": "ai-concierge-toggle-btn",
+        "ai_chat_modal": "ai-concierge-chat-modal",
+        "ai_chat_input": "ai-concierge-chat-input",
+        "ai_chat_send_btn": "ai-concierge-chat-send-btn"
+      }
+    }
+  ],
+  "image_urls": {
+    "hero_cinematic_bg": "https://images.unsplash.com/photo-1564343128896-3ffbcf9439e5?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2MzR8MHwxfHNlYXJjaHw0fHxsdXh1cnklMjBtb2Rlcm4lMjB2aWxsYSUyMGFyY2hpdGVjdHVyZSUyMHBvb2wlMjBkYXJrJTIwbmlnaHQlMjBsaWdodGluZ3xlbnwwfHx8YmxhY2t8MTc4OTIxMjYwNXww&ixlib=rb-4.1.0&q=85",
+    "penthouse_sunset": "https://images.unsplash.com/photo-1702411200201-3061d0eea802?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NzV8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBwZW50aG91c2UlMjBpbnRlcmlvciUyMGFyY2hpdGVjdHVyYWwlMjBkZXNpZ24lMjBkdXNrfGVufDB8fHx8MTc4OTIxMjYxMnww&ixlib=rb-4.1.0&q=85",
+    "rooftop_pool": "https://images.unsplash.com/photo-1776363497229-616cc7a541fe?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NzV8MHwxfHNlYXJjaHwzfHxsdXh1cnklMjBwZW50aG91c2UlMjBpbnRlcmlvciUyMGFyY2hpdGVjdHVyYWwlMjBkZXNpZ24lMjBkdXNrfGVufDB8fHx8MTc4OTIxMjYxMnww&ixlib=rb-4.1.0&q=85",
+    "golden_skyscraper": "https://images.unsplash.com/photo-1782852036326-9e4926c9d78d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1ODh8MHwxfHNlYXJjaHwyfHxtb2Rlcm4lMjBnbGFzcyUyMHNreXNjcmFwZXIlMjBhcmNoaXRlY3R1cmUlMjBkdXNrJTIwbGlnaHR8ZW58MHx8fHwxNzg5MjEyNjEyfDA&ixlib=rb-4.1.0&q=85",
+    "city_skyline_dusk": "https://images.unsplash.com/photo-1780611396050-9482895f89dd?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1ODh8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBnbGFzcyUyMHNreXNjcmFwZXIlMjBhcmNoaXRlY3R1cmUlMjBkdXNrJTIwbGlnaHR8ZW58MHx8fHwxNzg5MjEyNjEyfDA&ixlib=rb-4.1.0&q=85",
+    "villa_dusk_pool": "https://images.unsplash.com/photo-1574728435494-4134e681f687?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2MzR8MHwxfHNlYXJjaHwzfHxsdXh1cnklMjBtb2Rlcm4lMjB2aWxsYSUyMGFyY2hpdGVjdHVyZSUyMHBvb2wlMjBkYXJrJTIwbmlnaHQlMjBsaWdodGluZ3xlbnwwfHx8YmxhY2t8MTc4OTIxMjYwNXww&ixlib=rb-4.1.0&q=85"
+  },
+  "motion_and_animations": {
+    "libraries": ["framer-motion", "lucide-react"],
+    "hero_stagger": {
+      "initial": {"opacity": 0, "y": 30},
+      "animate": {"opacity": 1, "y": 0},
+      "transition": {"duration": 0.8, "ease": [0.16, 1, 0.3, 1]}
+    },
+    "card_hover": "hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(212,175,55,0.15)] transition-all duration-500",
+    "modal_transition": "transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease"
+  },
+  "accessibility_and_testing": {
+    "wcag_level": "WCAG 2.1 AA",
+    "contrast_ratios": "Minimum 4.5:1 for standard text, 3:1 for large display gold titles over deep navy backgrounds.",
+    "keyboard_navigation": "Full focus ring outline `focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:ring-offset-2 focus:ring-offset-[#050B14]` on all interactive elements.",
+    "data_testid_rule": "Every button, input, tab, project card, filter, modal trigger, and data item MUST contain a unique, kebab-case `data-testid` attribute."
+  },
+  "instructions_to_main_agent": [
+    "Inject Google Fonts stylesheet for 'Cormorant Garamond' and 'Plus Jakarta Sans' into public/index.html or top of index.css.",
+    "Ensure dark theme is active by default with high-contrast golden accent buttons and editorial typography.",
+    "Use framer-motion for smooth entrance reveals on project cards, stats counters, and filter transitions.",
+    "Build standard React JS components (using `.js` / `.jsx` extension as defined in the frontend directory).",
+    "Implement persistent floating elements: WhatsApp floating CTA and AI Concierge Chatbot drawer.",
+    "Implement complete state management for filters (status, category, city, BHK, price) with live search updates.",
+    "Provide a realistic mock backend API endpoint setup in FastAPI (`/api/projects`, `/api/leads`, `/api/stats`, `/api/chat`) and synchronized frontend state with mock fallback data so the platform is fully responsive and interactive without missing dependencies."
+  ]
+}
