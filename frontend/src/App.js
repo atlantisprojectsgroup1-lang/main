@@ -19,6 +19,8 @@ import Portfolio from "@/pages/Portfolio";
 import Blog from "@/pages/Blog";
 import BlogPost from "@/pages/BlogPost";
 import Contact from "@/pages/Contact";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import BookingPolicy from "@/pages/BookingPolicy";
 
 import AdminLogin from "@/pages/admin/AdminLogin";
 import AdminLayout from "@/pages/admin/AdminLayout";
@@ -101,6 +103,8 @@ function App() {
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/blog/:slug" element={<BlogPost />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/booking-cancellation-policy" element={<BookingPolicy />} />
                 <Route path="/admin" element={<AdminLogin />} />
                 <Route path="/admin" element={<AdminLayout />}>
                   <Route path="dashboard" element={<Dashboard />} />

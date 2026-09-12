@@ -15,6 +15,10 @@ Production-ready, SEO-optimized, AI-assisted platform for ATLANTIS (real estate 
 - Seeded from real scraped data: 6 projects (Three Sixty, The Marq, Central Park, Grand, Heights, at Wave), company profile, 5 leadership profiles, 10 design partners, 3 FAQs, 6 blog posts, Grand specs/amenities/landmarks
 
 ## Implemented (June 12, 2026)
+- Brand sync update: real ATLANTIS wordmark logo (from atlantisgroup.in) in header + footer, brand favicon, hero headings bumped to medium/semibold weight
+- Header + footer nav: About Us, Contact Us, Privacy Policy (/privacy-policy), Booking & Cancellation Policy (/booking-cancellation-policy) — both policy pages live
+- Social connect links in footer (Instagram + LinkedIn synced from atlantisgroup.in; Facebook/YouTube editable in Admin → Settings → Social Media Links)
+- Footer credit: "designed, published and managed by authorised channel partner QUALITY REAL ESTATE" linking to https://qualityrealestate.in/
 - Public site: cinematic hero + quick search, animated stats, 3D coverflow showcase (auto-scroll, drag, keyboard, infinite loop), status tabs, category tiles, why-ATLANTIS, milestones, blog teasers, enquiry CTAs
 - Projects listing: URL-persisted filters (status/category/city/config/budget/search), empty state
 - Project detail: sticky subnav, 3D showcase, gallery + lightbox, inventory/price table, EMI calculator, RERA block, landmarks, FAQs, similar projects, enquiry form, JSON-LD

@@ -41,6 +41,15 @@ export default function AdminSettings() {
 
   if (!settings || !company) return <div className="text-slate-500 font-mono text-xs tracking-widest uppercase">Loading settings…</div>;
 
+  const socialVal = (name) => (company.social_links || []).find((s) => s.name === name)?.url || "";
+  const setSocial = (name, url) => {
+    const links = [...(company.social_links || [])];
+    const i = links.findIndex((s) => s.name === name);
+    if (i >= 0) links[i] = { ...links[i], url };
+    else links.push({ name, url });
+    setCompany({ ...company, social_links: links });
+  };
+
   return (
     <div data-testid="admin-settings-page" className="max-w-3xl">
       <h1 className="font-serif text-3xl mb-8">Global Settings</h1>
@@ -66,6 +75,16 @@ export default function AdminSettings() {
               <label className="text-[0.62rem] font-mono uppercase tracking-[0.2em] text-slate-400 block mb-2">Sales Phone</label>
               <input data-testid="settings-phone-sales-input" value={company.phones?.sales || ""} onChange={(e) => setCompany({ ...company, phones: { ...company.phones, sales: e.target.value } })} className="w-full px-4 py-3 text-sm" />
             </div>
+          </div>
+          <div>
+            <label className="text-[0.62rem] font-mono uppercase tracking-[0.2em] text-slate-400 block mb-2">Social Media Links</label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {["Instagram", "LinkedIn", "Facebook", "YouTube"].map((name) => (
+                <input key={name} data-testid={`settings-social-${name.toLowerCase()}-input`} placeholder={`${name} URL`} value={socialVal(name)}
+                  onChange={(e) => setSocial(name, e.target.value)} className="px-4 py-3 text-sm font-mono" />
+              ))}
+            </div>
+            <p className="text-[0.62rem] text-slate-600 mt-1.5 font-mono">Saved links appear as icons in the site footer.</p>
           </div>
         </div>
       </div>

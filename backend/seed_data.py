@@ -37,7 +37,12 @@ COMPANY = {
     "offices": [
         {"name": "Corporate Office — Zirakpur", "address": "Office No. 25, 3rd Floor, Uptown Insignia, Airport Road", "city": "Zirakpur, Punjab 140603", "phone": "+91 97083 97083", "email": "", "map_lat": None, "map_lng": None, "google_maps_url": ""},
     ],
-    "social_links": [],
+    "social_links": [
+        {"name": "Instagram", "url": "https://www.instagram.com/atlantisgroup.in/"},
+        {"name": "LinkedIn", "url": "https://www.linkedin.com/company/atlantisgroup-in/"},
+        {"name": "Facebook", "url": ""},
+        {"name": "YouTube", "url": ""},
+    ],
     "phones": {"primary": "+91 97083 97083", "sales": "+91 96078 96078"},
     "stats": {"total_projects": 6, "luxury_residences": 500, "prime_locations": 3, "design_partners": 6},
     "placeholders": ["social_links", "awards", "office email", "office geo-coordinates"],
