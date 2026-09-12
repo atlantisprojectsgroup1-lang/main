@@ -1,10 +1,11 @@
 import { Navigate, NavLink, Outlet, useNavigate } from "react-router-dom";
-import { LayoutDashboard, Building2, Users, Settings, Sparkles, LogOut, Globe } from "lucide-react";
+import { LayoutDashboard, Building2, Users, UsersRound, Settings, Sparkles, LogOut, Globe } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
 const NAV = [
   { to: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard, testid: "admin-nav-dashboard" },
   { to: "/admin/projects", label: "Projects CMS", icon: Building2, testid: "admin-nav-projects-crud" },
+  { to: "/admin/team", label: "Team", icon: UsersRound, testid: "admin-nav-team" },
   { to: "/admin/leads", label: "CRM Pipeline", icon: Users, testid: "admin-nav-crm-pipeline" },
   { to: "/admin/studio", label: "AI Studio", icon: Sparkles, testid: "admin-nav-ai-studio" },
   { to: "/admin/settings", label: "Settings", icon: Settings, testid: "admin-nav-settings" },

@@ -43,6 +43,12 @@ COMPANY = {
         {"name": "Facebook", "url": ""},
         {"name": "YouTube", "url": ""},
     ],
+    "builder": {
+        "focus": "Luxury Residential & Commercial",
+        "regions": "Mohali · Zirakpur · Aerocity",
+        "rera_note": "Every project registered with Punjab RERA",
+        "delivery_promise": "On-time handover, transparent pricing, consortium-built quality",
+    },
     "phones": {"primary": "+91 97083 97083", "sales": "+91 96078 96078"},
     "stats": {"total_projects": 6, "luxury_residences": 500, "prime_locations": 3, "design_partners": 6},
     "placeholders": ["social_links", "awards", "office email", "office geo-coordinates"],
@@ -268,6 +274,14 @@ BLOG = [
 ]
 
 TESTIMONIALS = []
+
+TEAM = [
+    {"id": "team-1", "name": "Ar. Vishwas Chadha", "designation": "Director", "group": "Leadership", "photo": "https://atlantisgroup.in/assets/images/leadership/vishwas-chadha-home.jpg", "bio": "Guides the larger direction of the company, shaping each address through design clarity, market understanding and a long-view approach to development. TEDx Sukhna Lake speaker.", "linkedin": "", "sort_order": 1},
+    {"id": "team-2", "name": "Pardeep Chadha", "designation": "Director Sales", "group": "Leadership", "photo": "https://atlantisgroup.in/assets/images/leadership/pardeep-chadha.jpg", "bio": "Over 30 years in real estate, shaping sales strategy, client relationships and successful project launches.", "linkedin": "", "sort_order": 2},
+    {"id": "team-3", "name": "Amarjit Singh", "designation": "Director of Marketing", "group": "Leadership", "photo": "https://atlantisgroup.in/assets/images/leadership/amarjit-singh.jpg", "bio": "An industrialist with India and UAE experience, guiding branding, market expansion and investor confidence.", "linkedin": "", "sort_order": 3},
+    {"id": "team-4", "name": "CA Mohinder Pal Satija", "designation": "Director Accounts & Finance", "group": "Leadership", "photo": "https://atlantisgroup.in/assets/images/leadership/mohinder-pal-satija.jpg", "bio": "Leads accounts and finance with multinational experience across India and Japan.", "linkedin": "", "sort_order": 4},
+    {"id": "team-5", "name": "Jasbir Singh", "designation": "Director of Construction", "group": "Leadership", "photo": "https://atlantisgroup.in/assets/images/leadership/jasbir-singh.jpg", "bio": "Brings construction precision and landmark delivery experience to Atlantis Group developments.", "linkedin": "", "sort_order": 5},
+]
 
 SETTINGS = {
     "id": "global",

@@ -59,6 +59,7 @@ function EmiCalculator({ defaultPrice }) {
 export default function ProjectDetail() {
   const { slug } = useParams();
   const [project, setProject] = useState(null);
+  const [company, setCompany] = useState(null);
   const [lightbox, setLightbox] = useState(null);
   const [notFound, setNotFound] = useState(false);
 
@@ -66,6 +67,7 @@ export default function ProjectDetail() {
     setProject(null);
     setNotFound(false);
     api.get(`/projects/${slug}`).then((r) => setProject(r.data)).catch(() => setNotFound(true));
+    api.get("/company").then((r) => setCompany(r.data)).catch(() => {});
   }, [slug]);
 
   if (notFound) {
@@ -176,6 +178,22 @@ export default function ProjectDetail() {
               )}
             </div>
             <EmiCalculator defaultPrice={project.price_from} />
+            {company && (
+              <div className="glass-card p-7" data-testid="builder-profile-card">
+                <img src="/assets/atlantis-logo.png" alt="ATLANTIS Group" className="h-9 w-auto object-contain mb-4" />
+                <p className="text-[0.6rem] font-mono uppercase tracking-[0.2em] text-slate-500">Developed by</p>
+                <h3 className="font-serif text-xl mt-1">{company.brand_name || "ATLANTIS"} Group</h3>
+                <p className="text-xs text-slate-400 mt-2">Est. {company.founded_year || 2016} · {company.builder?.focus || "Luxury Residential & Commercial"}</p>
+                <div className="flex flex-wrap gap-2 mt-4">
+                  <span className="text-[0.6rem] font-mono px-2.5 py-1 border border-slate-700 text-slate-300">{company.stats?.total_projects || 6} Projects</span>
+                  <span className="text-[0.6rem] font-mono px-2.5 py-1 border border-slate-700 text-slate-300">{company.stats?.luxury_residences || 500}+ Residences</span>
+                  <span className="text-[0.6rem] font-mono px-2.5 py-1 border border-emerald-700/50 text-emerald-400">RERA Registered</span>
+                </div>
+                <Link to="/about" data-testid="builder-profile-link" className="text-[#E6C687] text-[0.62rem] font-mono uppercase tracking-[0.2em] mt-5 inline-flex items-center gap-1.5 hover:gap-2.5 transition-all">
+                  Builder Profile →
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </section>

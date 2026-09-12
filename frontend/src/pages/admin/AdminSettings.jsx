@@ -86,6 +86,18 @@ export default function AdminSettings() {
             </div>
             <p className="text-[0.62rem] text-slate-600 mt-1.5 font-mono">Saved links appear as icons in the site footer.</p>
           </div>
+          <div>
+            <label className="text-[0.62rem] font-mono uppercase tracking-[0.2em] text-slate-400 block mb-2">Builder Profile</label>
+            <div className="space-y-3">
+              <input data-testid="settings-builder-focus-input" placeholder="Focus (e.g. Luxury Residential & Commercial)" value={company.builder?.focus || ""}
+                onChange={(e) => setCompany({ ...company, builder: { ...(company.builder || {}), focus: e.target.value } })} className="w-full px-4 py-3 text-sm" />
+              <input data-testid="settings-builder-regions-input" placeholder="Regions (e.g. Mohali · Zirakpur · Aerocity)" value={company.builder?.regions || ""}
+                onChange={(e) => setCompany({ ...company, builder: { ...(company.builder || {}), regions: e.target.value } })} className="w-full px-4 py-3 text-sm" />
+              <input data-testid="settings-builder-promise-input" placeholder="Delivery promise" value={company.builder?.delivery_promise || ""}
+                onChange={(e) => setCompany({ ...company, builder: { ...(company.builder || {}), delivery_promise: e.target.value } })} className="w-full px-4 py-3 text-sm" />
+            </div>
+            <p className="text-[0.62rem] text-slate-600 mt-1.5 font-mono">Shown in the Builder Profile section on About and the builder card on every project page.</p>
+          </div>
         </div>
       </div>
 

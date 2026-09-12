@@ -20,7 +20,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, Field
 from typing import Optional, List
 
-from seed_data import COMPANY, PROJECTS, FAQS, BLOG, TESTIMONIALS, SETTINGS
+from seed_data import COMPANY, PROJECTS, FAQS, BLOG, TESTIMONIALS, SETTINGS, TEAM
 
 mongo_url = os.environ["MONGO_URL"]
 client = AsyncIOMotorClient(mongo_url)
@@ -582,6 +582,36 @@ async def admin_del_blog(bid: str, user=Depends(get_current_user)):
     return {"ok": True}
 
 
+# ---------------- Team ----------------
+
+@api.get("/team")
+async def list_team():
+    return await db.team.find({}, {"_id": 0}).sort([("sort_order", 1), ("name", 1)]).to_list(200)
+
+
+@api.post("/admin/team")
+async def admin_add_team_member(member: dict, user=Depends(get_current_user)):
+    member["id"] = member.get("id") or new_id()
+    member.pop("_id", None)
+    await db.team.insert_one(member)
+    member.pop("_id", None)
+    return member
+
+
+@api.put("/admin/team/{tid}")
+async def admin_update_team_member(tid: str, member: dict, user=Depends(get_current_user)):
+    member.pop("_id", None)
+    member["id"] = tid
+    await db.team.update_one({"id": tid}, {"$set": member}, upsert=True)
+    return member
+
+
+@api.delete("/admin/team/{tid}")
+async def admin_del_team_member(tid: str, user=Depends(get_current_user)):
+    await db.team.delete_one({"id": tid})
+    return {"ok": True}
+
+
 # ---------------- Admin: AI Content Studio ----------------
 
 class AiGenIn(BaseModel):
@@ -654,6 +684,9 @@ async def startup():
         await db.blog.insert_many([dict(b) for b in BLOG])
     if await db.testimonials.count_documents({}) == 0 and TESTIMONIALS:
         await db.testimonials.insert_many([dict(t) for t in TESTIMONIALS])
+    if await db.team.count_documents({}) == 0:
+        await db.team.insert_many([dict(t) for t in TEAM])
+        logger.info(f"Seeded {len(TEAM)} team members")
 
 
 @app.on_event("shutdown")

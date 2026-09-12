@@ -30,6 +30,7 @@ import AdminProjects from "@/pages/admin/AdminProjects";
 import AdminLeads from "@/pages/admin/AdminLeads";
 import AdminStudio from "@/pages/admin/AdminStudio";
 import AdminSettings from "@/pages/admin/AdminSettings";
+import AdminTeam from "@/pages/admin/AdminTeam";
 
 import { useState } from "react";
 
@@ -111,6 +112,7 @@ function App() {
                 <Route path="/admin" element={<AdminLayout />}>
                   <Route path="dashboard" element={<Dashboard />} />
                   <Route path="projects" element={<AdminProjects />} />
+                  <Route path="team" element={<AdminTeam />} />
                   <Route path="leads" element={<AdminLeads />} />
                   <Route path="studio" element={<AdminStudio />} />
                   <Route path="settings" element={<AdminSettings />} />
