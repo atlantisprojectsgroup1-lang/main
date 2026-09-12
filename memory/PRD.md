@@ -24,6 +24,7 @@ Production-ready, SEO-optimized, AI-assisted platform for ATLANTIS (real estate 
 - EnquiryPopup: auto-opens once per session (~1.8s after first visit), ATLANTIS logo on top, project + budget filter selects, posts lead with source=enquiry_popup (verified end-to-end)
 - Hot Selling Properties section on home (is_hot_selling projects) with red-accent styling; hot badges on cards now crimson
 - Red theme layer: crimson accents (hero gradient tint, popup strip, hot section glow, scrollbar, selection, button hover glow) over the navy-gold base
+- Home hero is now an auto-rotating image slider: crossfades through all 21 project images every 5s, with a "Now Showcasing" caption chip (links to the project) and click-to-jump progress dots; falls back to the static hero image before projects load
 - Public site: cinematic hero + quick search, animated stats, 3D coverflow showcase (auto-scroll, drag, keyboard, infinite loop), status tabs, category tiles, why-ATLANTIS, milestones, blog teasers, enquiry CTAs
 - Projects listing: URL-persisted filters (status/category/city/config/budget/search), empty state
 - Project detail: sticky subnav, 3D showcase, gallery + lightbox, inventory/price table, EMI calculator, RERA block, landmarks, FAQs, similar projects, enquiry form, JSON-LD

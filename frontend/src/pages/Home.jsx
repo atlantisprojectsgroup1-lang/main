@@ -48,6 +48,14 @@ export default function Home() {
 
   const filtered = tab === "ALL" ? projects : projects.filter((p) => p.status === tab);
   const hotProjects = projects.filter((p) => p.is_hot_selling);
+
+  const heroSlides = projects.flatMap((p) => (p.images || []).map((img) => ({ url: img.url, alt: img.alt, name: p.name, slug: p.slug })));
+  const [heroIdx, setHeroIdx] = useState(0);
+  useEffect(() => {
+    if (heroSlides.length < 2) return;
+    const t = setInterval(() => setHeroIdx((i) => (i + 1) % heroSlides.length), 5000);
+    return () => clearInterval(t);
+  }, [heroSlides.length]);
   const coverItems = projects.filter((p) => p.featured).map((p) => ({
     key: p.id, image: p.images?.[0]?.url || HERO_BG, title: p.name,
     eyebrow: p.status, subtitle: `${p.locality}, ${p.city} · ${p.price_label}`, slug: p.slug,
@@ -69,9 +77,30 @@ export default function Home() {
       {/* HERO */}
       <section data-testid="hero-section" className="relative min-h-screen flex flex-col justify-end hero-grain overflow-hidden">
         <div className="absolute inset-0">
-          <img src={HERO_BG} alt="ATLANTIS landmark residences at night" className="w-full h-full object-cover" />
+          {(heroSlides.length ? heroSlides : [{ url: HERO_BG, alt: "ATLANTIS landmark residences at night" }]).map((s, i) => (
+            <img key={`${s.url}-${i}`} src={s.url} alt={s.alt || "ATLANTIS project"} data-testid={`hero-slide-${i}`}
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[1400ms] ease-out ${i === heroIdx ? "opacity-100" : "opacity-0"}`}
+              loading={i === 0 ? "eager" : "lazy"} />
+          ))}
           <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/70 to-[#050B14]/30" />
           <div className="absolute inset-0 bg-gradient-to-tr from-[#C8102E]/25 via-transparent to-transparent" />
+          {heroSlides.length > 1 && (
+            <div className="absolute bottom-6 right-6 z-10 hidden sm:flex flex-col items-end gap-3">
+              {heroSlides[heroIdx]?.name && (
+                <Link to={`/projects/${heroSlides[heroIdx].slug}`} data-testid="hero-slide-caption"
+                  className="glass-card px-4 py-2.5 text-right hover:border-[#D4AF37]/60 transition-colors">
+                  <p className="text-[0.55rem] font-mono uppercase tracking-[0.25em] text-[#E6C687]/80">Now Showcasing</p>
+                  <p className="font-serif text-lg text-slate-100 leading-tight">{heroSlides[heroIdx].name}</p>
+                </Link>
+              )}
+              <div className="flex gap-1.5">
+                {heroSlides.map((_, i) => (
+                  <button key={i} data-testid={`hero-slide-dot-${i}`} aria-label={`Slide ${i + 1}`} onClick={() => setHeroIdx(i)}
+                    className={`h-1 transition-all duration-500 ${i === heroIdx ? "w-7 bg-gradient-to-r from-[#C8102E] to-[#D4AF37]" : "w-2.5 bg-slate-600 hover:bg-slate-400"}`} />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-36 pb-16">
           <motion.p {...fade} className="eyebrow mb-5">Premium Residences · Chandigarh Tricity</motion.p>
