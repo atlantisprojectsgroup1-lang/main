@@ -103,7 +103,7 @@ export default function Home() {
           )}
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-36 pb-16">
-          <motion.p {...fade} className="eyebrow mb-5">Premium Residences · Chandigarh Tricity</motion.p>
+          <motion.p {...fade} className="eyebrow mb-5">Premium Residences · Chandigarh</motion.p>
           <motion.h1 {...fade} transition={{ ...fade.transition, delay: 0.1 }} data-testid="hero-main-title"
             className="font-serif font-medium text-4xl sm:text-5xl lg:text-7xl leading-[1.05] tracking-tight max-w-4xl">
             Built for Those<br />Who <span className="gold-text italic font-semibold">Arrive.</span>
