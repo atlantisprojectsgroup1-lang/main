@@ -1,32 +1,24 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Search, SlidersHorizontal } from "lucide-react";
+import { SlidersHorizontal } from "lucide-react";
 import api from "../lib/api";
 import SEO from "../components/SEO";
 import ProjectCard from "../components/ProjectCard";
 
 const STATUSES = ["", "ONGOING", "UPCOMING", "DELIVERED"];
-const BUDGETS = [
-  { label: "Any Budget", value: "" },
-  { label: "Up to ₹1.5 Cr", value: "15000000" },
-  { label: "Up to ₹2 Cr", value: "20000000" },
-  { label: "Up to ₹3 Cr", value: "30000000" },
-];
 
 export default function Projects() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [projects, setProjects] = useState([]);
-  const [meta, setMeta] = useState({ cities: [], configs: [] });
+  const [meta, setMeta] = useState({ cities: [], types: [] });
   const [loading, setLoading] = useState(true);
 
   const filters = {
     status: searchParams.get("status") || "",
     category: searchParams.get("category") || "",
     city: searchParams.get("city") || "",
-    config: searchParams.get("config") || "",
-    max_budget: searchParams.get("max_budget") || "",
-    search: searchParams.get("search") || "",
+    ptype: searchParams.get("ptype") || "",
   };
 
   useEffect(() => {
@@ -78,18 +70,10 @@ export default function Projects() {
               <option value="">City — All</option>
               {meta.cities.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
-            <select data-testid="filter-config-select" value={filters.config} onChange={(e) => set("config", e.target.value)} className="px-3 py-2.5 text-xs flex-1 min-w-[130px]">
-              <option value="">Configuration — All</option>
-              {meta.configs.map((c) => <option key={c} value={c}>{c}</option>)}
+            <select data-testid="filter-ptype-select" value={filters.ptype} onChange={(e) => set("ptype", e.target.value)} className="px-3 py-2.5 text-xs flex-1 min-w-[130px]">
+              <option value="">Property Type — All</option>
+              {meta.types.map((t) => <option key={t} value={t}>{t}</option>)}
             </select>
-            <select data-testid="filter-budget-select" value={filters.max_budget} onChange={(e) => set("max_budget", e.target.value)} className="px-3 py-2.5 text-xs flex-1 min-w-[130px]">
-              {BUDGETS.map((b) => <option key={b.label} value={b.value}>{b.label}</option>)}
-            </select>
-            <div className="relative flex-1 min-w-[160px]">
-              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
-              <input data-testid="filter-search-input" value={filters.search} onChange={(e) => set("search", e.target.value)}
-                placeholder="Search locality, project…" className="w-full pl-9 pr-3 py-2.5 text-xs" />
-            </div>
           </div>
         </div>
 
@@ -99,7 +83,7 @@ export default function Projects() {
           <div data-testid="projects-empty-state" className="py-24 text-center">
             <SlidersHorizontal size={28} className="mx-auto text-[#C5A059]/50 mb-4" />
             <p className="font-serif text-2xl text-slate-300">No addresses match those filters.</p>
-            <p className="text-sm text-slate-500 mt-2">Try widening your budget or clearing the search.</p>
+            <p className="text-sm text-slate-500 mt-2">Try a different status, city or property type.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

@@ -143,8 +143,7 @@ async def get_company():
 @api.get("/projects")
 async def list_projects(
     status: Optional[str] = None, category: Optional[str] = None, city: Optional[str] = None,
-    config: Optional[str] = None, max_budget: Optional[int] = None, search: Optional[str] = None,
-    featured: Optional[bool] = None,
+    ptype: Optional[str] = None, featured: Optional[bool] = None,
 ):
     q = {}
     if status:
@@ -153,22 +152,10 @@ async def list_projects(
         q["category"] = category.upper()
     if city:
         q["city"] = {"$regex": f"^{re.escape(city)}$", "$options": "i"}
-    if config:
-        q["configs.config"] = {"$regex": re.escape(config), "$options": "i"}
-    ands = []
-    if max_budget:
-        ands.append({"$or": [{"price_from": None}, {"price_from": {"$lte": max_budget}}]})
+    if ptype:
+        q["project_type"] = {"$regex": f"^{re.escape(ptype)}$", "$options": "i"}
     if featured is not None:
         q["featured"] = featured
-    if search:
-        ands.append({"$or": [
-            {"name": {"$regex": re.escape(search), "$options": "i"}},
-            {"locality": {"$regex": re.escape(search), "$options": "i"}},
-            {"city": {"$regex": re.escape(search), "$options": "i"}},
-            {"description": {"$regex": re.escape(search), "$options": "i"}},
-        ]})
-    if ands:
-        q["$and"] = ands
     projects = await db.projects.find(q, {"_id": 0}).sort("sort_order", 1).to_list(200)
     return projects
 
@@ -176,8 +163,8 @@ async def list_projects(
 @api.get("/projects/meta/filters")
 async def project_filters():
     cities = await db.projects.distinct("city")
-    configs = await db.projects.distinct("configs.config")
-    return {"cities": sorted([c for c in cities if c]), "configs": sorted([c for c in configs if c])}
+    types = await db.projects.distinct("project_type")
+    return {"cities": sorted([c for c in cities if c]), "types": sorted([t for t in types if t])}
 
 
 @api.get("/projects/{slug}")

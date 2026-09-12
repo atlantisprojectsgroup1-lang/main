@@ -36,13 +36,15 @@ export default function Footer({ company }) {
             <Link to="/portfolio" data-testid="footer-link-portfolio" className="hover:text-[#E6C687] transition-colors">Delivered Portfolio</Link>
             <Link to="/about" data-testid="footer-link-about" className="hover:text-[#E6C687] transition-colors">About Us</Link>
             <Link to="/blog" data-testid="footer-link-blog" className="hover:text-[#E6C687] transition-colors">Insights</Link>
-            <Link to="/contact" data-testid="footer-link-contact" className="hover:text-[#E6C687] transition-colors">Contact Us</Link>
           </div>
         </div>
         <div>
           <h4 className="eyebrow mb-5">Legal</h4>
           <div className="flex flex-col gap-3 text-sm text-slate-400">
+            <Link to="/contact" data-testid="footer-link-contact" className="hover:text-[#E6C687] transition-colors">Contact Us</Link>
             <Link to="/privacy-policy" data-testid="footer-link-privacy" className="hover:text-[#E6C687] transition-colors">Privacy Policy</Link>
+            <Link to="/terms-and-conditions" data-testid="footer-link-terms" className="hover:text-[#E6C687] transition-colors">Terms & Conditions</Link>
+            <Link to="/payment-refund-policy" data-testid="footer-link-payment-refund" className="hover:text-[#E6C687] transition-colors">Payment & Refund Policy</Link>
             <Link to="/booking-cancellation-policy" data-testid="footer-link-booking-policy" className="hover:text-[#E6C687] transition-colors">Booking & Cancellation Policy</Link>
             <Link to="/admin" data-testid="footer-link-admin" className="hover:text-[#E6C687] transition-colors">Admin Login</Link>
           </div>
@@ -69,6 +71,9 @@ export default function Footer({ company }) {
             className="text-[#E6C687] hover:text-[#F3E5AB] underline underline-offset-4 decoration-[#C5A059]/40 transition-colors">
             QUALITY REAL ESTATE
           </a>
+        </p>
+        <p className="text-[0.65rem] font-mono text-slate-600 tracking-wider text-center mt-2.5" data-testid="footer-marketing-disclaimer">
+          This website is published for marketing, branding and promotional purposes only. All project details are indicative; please verify with the developer and Punjab RERA.
         </p>
         <p className="text-xs font-mono text-slate-600 tracking-widest text-center mt-3">© {new Date().getFullYear()} ATLANTIS GROUP · ALL RIGHTS RESERVED</p>
       </div>

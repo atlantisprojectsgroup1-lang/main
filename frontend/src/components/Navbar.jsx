@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, Lock } from "lucide-react";
+import { Menu, X, Lock, ChevronDown } from "lucide-react";
 
 const LINKS = [
   { to: "/projects", label: "Projects", testid: "nav-link-projects" },
@@ -8,8 +8,13 @@ const LINKS = [
   { to: "/about", label: "About Us", testid: "nav-link-about" },
   { to: "/blog", label: "Insights", testid: "nav-link-blog" },
   { to: "/contact", label: "Contact Us", testid: "nav-link-contact" },
+];
+
+const POLICY_LINKS = [
   { to: "/privacy-policy", label: "Privacy Policy", testid: "nav-link-privacy" },
-  { to: "/booking-cancellation-policy", label: "Booking Policy", testid: "nav-link-booking-policy" },
+  { to: "/terms-and-conditions", label: "Terms & Conditions", testid: "nav-link-terms" },
+  { to: "/payment-refund-policy", label: "Payment & Refund Policy", testid: "nav-link-payment-refund" },
+  { to: "/booking-cancellation-policy", label: "Booking & Cancellation", testid: "nav-link-booking-policy" },
 ];
 
 export default function Navbar() {
@@ -37,6 +42,21 @@ export default function Navbar() {
               {l.label}
             </Link>
           ))}
+          <div className="relative group" data-testid="nav-policies-dropdown">
+            <button data-testid="nav-policies-toggle" className="flex items-center gap-1.5 text-[0.62rem] font-mono uppercase tracking-[0.16em] text-slate-300 hover:text-[#E6C687] transition-colors duration-300 whitespace-nowrap">
+              Policies <ChevronDown size={12} className="group-hover:rotate-180 transition-transform duration-300" />
+            </button>
+            <div className="absolute right-0 top-full pt-4 opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300">
+              <div className="glass-card py-2 w-64 flex flex-col shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
+                {POLICY_LINKS.map((l) => (
+                  <Link key={l.to} to={l.to} data-testid={`dropdown-${l.testid}`}
+                    className="px-5 py-3 text-[0.62rem] font-mono uppercase tracking-[0.16em] text-slate-300 hover:text-[#F3E5AB] hover:bg-[#D4AF37]/10 transition-colors">
+                    {l.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
         </nav>
 
         <div className="hidden lg:flex items-center gap-4">
@@ -55,6 +75,12 @@ export default function Navbar() {
         <div className="lg:hidden backdrop-blur-xl bg-[#050B14]/95 border-t border-[#C5A059]/20 px-6 py-6 flex flex-col gap-5">
           {LINKS.map((l) => (
             <Link key={l.to} to={l.to} data-testid={`mobile-${l.testid}`} onClick={() => setOpen(false)} className="text-sm font-mono uppercase tracking-[0.2em] text-slate-200">
+              {l.label}
+            </Link>
+          ))}
+          <p className="text-[0.55rem] font-mono uppercase tracking-[0.3em] text-[#C5A059]/70 pt-3 border-t border-slate-800">Policies</p>
+          {POLICY_LINKS.map((l) => (
+            <Link key={l.to} to={l.to} data-testid={`mobile-${l.testid}`} onClick={() => setOpen(false)} className="text-sm font-mono uppercase tracking-[0.2em] text-slate-400">
               {l.label}
             </Link>
           ))}
