@@ -49,7 +49,6 @@ export default function About() {
         <section data-testid="builder-profile-section" className="mt-20">
           <p className="eyebrow mb-3">Builder Profile</p>
           <div className="glass-card p-8 lg:p-12 relative overflow-hidden">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(200,16,46,0.1),transparent_55%)] pointer-events-none" />
             <div className="relative grid grid-cols-1 lg:grid-cols-3 gap-10 items-center">
               <div>
                 <img src="/assets/atlantis-logo.png" alt="ATLANTIS Group logo" className="h-12 w-auto object-contain mb-5" data-testid="builder-logo" />

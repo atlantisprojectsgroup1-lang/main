@@ -83,7 +83,6 @@ export default function Home() {
               loading={i === 0 ? "eager" : "lazy"} />
           ))}
           <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/70 to-[#050B14]/30" />
-          <div className="absolute inset-0 bg-gradient-to-tr from-[#C8102E]/25 via-transparent to-transparent" />
           {heroSlides.length > 1 && (
             <div className="absolute bottom-6 right-6 z-10 hidden sm:flex flex-col items-end gap-3">
               {heroSlides[heroIdx]?.name && (
@@ -96,7 +95,7 @@ export default function Home() {
               <div className="flex gap-1.5">
                 {heroSlides.map((_, i) => (
                   <button key={i} data-testid={`hero-slide-dot-${i}`} aria-label={`Slide ${i + 1}`} onClick={() => setHeroIdx(i)}
-                    className={`h-1 transition-all duration-500 ${i === heroIdx ? "w-7 bg-gradient-to-r from-[#C8102E] to-[#D4AF37]" : "w-2.5 bg-slate-600 hover:bg-slate-400"}`} />
+                    className={`h-1 transition-all duration-500 ${i === heroIdx ? "w-7 bg-[#D4AF37]" : "w-2.5 bg-slate-600 hover:bg-slate-400"}`} />
                 ))}
               </div>
             </div>
@@ -153,12 +152,10 @@ export default function Home() {
       {/* HOT SELLING */}
       {hotProjects.length > 0 && (
         <section data-testid="hot-selling-section" className="py-20 lg:py-24 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(200,16,46,0.15),transparent_55%)]" />
-          <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[#C8102E] via-[#C8102E]/40 to-transparent" />
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <p className="eyebrow mb-3" style={{ color: "#F87171" }}>Featured · Hot Selling</p>
+            <p className="eyebrow mb-3">Featured · Hot Selling</p>
             <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal tracking-tight mb-12">
-              Hot Selling <span className="crimson-text italic">Properties</span>
+              Hot Selling <span className="gold-text italic">Properties</span>
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {hotProjects.map((p, i) => (

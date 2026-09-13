@@ -53,7 +53,7 @@ export default function EnquiryPopup() {
   return (
     <div data-testid="enquiry-popup-modal" className="fixed inset-0 z-[80] flex items-center justify-center px-4 bg-[#050B14]/85 backdrop-blur-md" onClick={close}>
       <div className="relative w-full max-w-md glass-card overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.7)]" onClick={(e) => e.stopPropagation()}>
-        <div className="h-1.5 w-full bg-gradient-to-r from-[#7F1D1D] via-[#C8102E] to-[#D4AF37]" />
+        <div className="h-1.5 w-full bg-gradient-to-r from-[#9A7B38] via-[#D4AF37] to-[#F3E5AB]" />
         <button data-testid="enquiry-popup-close-btn" onClick={close} aria-label="Close"
           className="absolute top-4 right-4 z-10 w-9 h-9 flex items-center justify-center border border-slate-700 text-slate-400 hover:text-white hover:border-[#C8102E] transition-colors">
           <X size={16} />
@@ -62,7 +62,7 @@ export default function EnquiryPopup() {
         <div className="p-8 pt-7">
           <div className="flex flex-col items-center text-center mb-6">
             <img src="/assets/atlantis-logo.png" alt="ATLANTIS Group" className="h-10 w-auto object-contain mb-3" data-testid="enquiry-popup-logo" />
-            <p className="eyebrow !text-red-400">Private Enquiry</p>
+            <p className="eyebrow">Private Enquiry</p>
             <h2 className="font-serif text-2xl mt-2">Reserve Your <span className="gold-text italic">Residence</span></h2>
             <p className="text-xs text-slate-500 mt-1.5 font-light">Response within 24 hours · DPDP compliant</p>
           </div>
