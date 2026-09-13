@@ -5,10 +5,10 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
  * 3D Coverflow showcase — auto-scroll, pause on hover, drag/swipe,
  * keyboard arrows, infinite loop, parallax depth, glass captions.
  */
-export default function Coverflow({ items = [], autoSpeed = 4000, onSelect, testid = "coverflow-carousel", height = "h-[420px]" }) {
+export default function Coverflow({ items = [], autoSpeed = 2800, onSelect, testid = "coverflow-carousel", height = "h-[420px]" }) {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
-  const drag = useRef({ startX: 0, dragging: false });
+  const drag = useRef({ startX: 0, dragging: false, moved: false });
   const n = items.length;
   const reduced = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -34,20 +34,26 @@ export default function Coverflow({ items = [], autoSpeed = 4000, onSelect, test
 
   if (n === 0) return null;
 
-  const onPointerDown = (e) => { drag.current = { startX: e.clientX ?? e.touches?.[0]?.clientX ?? 0, dragging: true }; };
+  const onPointerDown = (e) => { drag.current = { startX: e.clientX ?? e.touches?.[0]?.clientX ?? 0, dragging: true, moved: false }; };
+  const onPointerMove = (e) => {
+    if (!drag.current.dragging) return;
+    const x = e.clientX ?? e.touches?.[0]?.clientX ?? drag.current.startX;
+    if (Math.abs(x - drag.current.startX) > 12) drag.current.moved = true;
+  };
   const onPointerUp = (e) => {
     if (!drag.current.dragging) return;
     const endX = e.clientX ?? e.changedTouches?.[0]?.clientX ?? drag.current.startX;
     const dx = endX - drag.current.startX;
     if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
     drag.current.dragging = false;
+    setTimeout(() => { drag.current.moved = false; }, 60);
   };
 
   return (
     <div data-testid={testid} className={`relative ${height} select-none`}
       onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}
-      onPointerDown={onPointerDown} onPointerUp={onPointerUp}
-      onTouchStart={onPointerDown} onTouchEnd={onPointerUp}>
+      onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp}
+      onTouchStart={onPointerDown} onTouchMove={onPointerMove} onTouchEnd={onPointerUp}>
       <div className="coverflow-stage absolute inset-0 flex items-center justify-center">
         {items.map((item, i) => {
           let offset = i - active;
@@ -56,20 +62,21 @@ export default function Coverflow({ items = [], autoSpeed = 4000, onSelect, test
           const abs = Math.abs(offset);
           const visible = abs <= 2;
           const style = {
-            transform: `translateX(${offset * 46}%) translateZ(${-abs * 260}px) rotateY(${offset * -32}deg) scale(${1 - abs * 0.12})`,
+            transform: `translateX(${offset * 68}%) translateZ(${-abs * 280}px) rotateY(${offset * -30}deg) scale(${1 - abs * 0.14})`,
             opacity: visible ? 1 - abs * 0.35 : 0,
             zIndex: 20 - abs,
             filter: abs === 0 ? "none" : "brightness(0.45)",
             pointerEvents: visible ? "auto" : "none",
           };
           return (
-            <div key={item.key ?? i} data-testid={`${testid}-slide-${i}`} className="coverflow-slide absolute w-[78%] sm:w-[52%] lg:w-[42%] h-full cursor-pointer" style={style}
-              onClick={() => { if (offset === 0 && onSelect) onSelect(item); else if (visible) setActive(i); }}>
+            <div key={item.key ?? i} data-testid={`${testid}-slide-${i}`} className="coverflow-slide absolute w-[74%] sm:w-[48%] lg:w-[38%] h-full cursor-grab active:cursor-grabbing" style={style}
+              onClick={() => { if (drag.current.moved) return; if (offset === 0 && onSelect) onSelect(item); else if (visible) setActive(i); }}>
               <div className="relative w-full h-full overflow-hidden border border-[#C5A059]/30 shadow-[0_30px_60px_rgba(0,0,0,0.6)]">
                 <img src={item.image} alt={item.alt || item.title} className="w-full h-full object-cover" loading={abs > 1 ? "lazy" : "eager"} draggable={false} />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-transparent to-transparent" />
                 {abs === 0 && (
                   <div className="absolute bottom-0 left-0 right-0 p-6 glass-card border-0 border-t border-[#C5A059]/30">
+                    {item.logo && <img src={item.logo} alt={`${item.title} logo`} className="h-9 w-9 object-contain mb-2.5" />}
                     {item.eyebrow && <p className="eyebrow mb-1">{item.eyebrow}</p>}
                     <h3 className="font-serif text-2xl text-slate-100">{item.title}</h3>
                     {item.subtitle && <p className="text-xs font-mono text-slate-400 mt-1 tracking-wider">{item.subtitle}</p>}

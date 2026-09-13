@@ -9,6 +9,7 @@ const EMPTY = {
   city: "", locality: "", address: "", rera_number: "", possession: "", price_label: "Price on Request",
   price_from: "", total_towers: "", total_area: "", floors: "", featured: false, is_hot_selling: false,
   sort_order: 10, project_type: [], images: [], configs: [], amenities: [], specifications: [], landmarks: [],
+  videos: [], documents: [],
   seo: { title: "", description: "", keywords: "" }, placeholders: [], logo: "",
 };
 
@@ -21,6 +22,27 @@ export default function AdminProjects() {
 
   const load = () => api.get("/admin/projects").then((r) => setProjects(r.data)).catch(() => {});
   useEffect(() => { load(); }, []);
+
+  const uploadPdf = async (e) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    e.target.value = "";
+    if (f.type !== "application/pdf") { toast.error("Only PDF files are accepted here."); return; }
+    const reader = new FileReader();
+    reader.onload = async () => {
+      try {
+        const { data } = await api.post("/admin/upload", { data_url: reader.result });
+        setEditing((cur) => ({
+          ...cur,
+          documents_text: `${cur.documents_text || ""}${cur.documents_text ? "\n" : ""}${f.name.replace(/\.pdf$/i, "")} | ${data.url}`,
+        }));
+        toast.success("PDF uploaded and added to documents.");
+      } catch (err) {
+        toast.error(formatApiError(err, "Upload failed."));
+      }
+    };
+    reader.readAsDataURL(f);
+  };
 
   const save = async () => {
     setSaving(true);
@@ -37,7 +59,11 @@ export default function AdminProjects() {
         .map((l) => { const [config, price, area] = l.split("|").map((s) => s?.trim()); return { config: config || "", price_label: price || "On Request", area: area || "", availability: "AVAILABLE" }; });
       p.amenities = (typeof p.amenities_text === "string" ? p.amenities_text : toText(p.amenities)).split("\n").map((l) => l.trim()).filter(Boolean)
         .map((l) => { const [name, group] = l.split("|").map((s) => s?.trim()); return { name, group: group || "Lifestyle" }; });
-      delete p.images_text; delete p.configs_text; delete p.amenities_text;
+      p.videos = (typeof p.videos_text === "string" ? p.videos_text : "").split("\n").map((l) => l.trim()).filter(Boolean)
+        .map((l) => { const [url, title] = l.split("|").map((s) => s?.trim()); return { url, title: title || "Project Video" }; });
+      p.documents = (typeof p.documents_text === "string" ? p.documents_text : "").split("\n").map((l) => l.trim()).filter(Boolean)
+        .map((l) => { const [name, url] = l.split("|").map((s) => s?.trim()); return { name: name || "Document", url }; });
+      delete p.images_text; delete p.configs_text; delete p.amenities_text; delete p.videos_text; delete p.documents_text;
       if (projects.some((x) => x.id === p.id)) {
         await api.put(`/admin/projects/${p.id}`, p);
       } else {
@@ -64,7 +90,7 @@ export default function AdminProjects() {
     <div data-testid="admin-projects-page">
       <div className="flex items-center justify-between mb-8">
         <h1 className="font-serif text-3xl">Projects CMS</h1>
-        <button data-testid="admin-add-project-btn" onClick={() => setEditing({ ...EMPTY, images_text: "", configs_text: "", amenities_text: "" })} className="gold-btn">
+        <button data-testid="admin-add-project-btn" onClick={() => setEditing({ ...EMPTY, images_text: "", configs_text: "", amenities_text: "", videos_text: "", documents_text: "" })} className="gold-btn">
           <Plus size={14} /> New Project
         </button>
       </div>
@@ -83,13 +109,13 @@ export default function AdminProjects() {
               <tr key={p.id} data-testid={`admin-project-row-${p.slug}`} className="border-b border-slate-800/50 hover:bg-[#D4AF37]/5">
                 <td className="px-5 py-3.5 font-serif text-base">{p.name}</td>
                 <td className="px-5 py-3.5 text-slate-400">{p.city}</td>
-                <td className="px-5 py-3.5"><span className="text-[0.62rem] font-mono uppercase tracking-wider text-slate-300">{p.status}</span></td>
+                <td className="px-5 py-3.5"><span className="text-[0.62rem] font-mono uppercase tracking-wider text-slate-300">{(p.status || "").replace(/_/g, " ")}</span></td>
                 <td className="px-5 py-3.5 text-slate-400 text-xs">{p.category}</td>
                 <td className="px-5 py-3.5 gold-text font-serif">{p.price_label}</td>
                 <td className="px-5 py-3.5">{p.featured ? <span className="text-[#D4AF37]">●</span> : <span className="text-slate-600">○</span>}</td>
                 <td className="px-5 py-3.5">
                   <div className="flex gap-2">
-                    <button data-testid={`admin-edit-project-${p.slug}`} onClick={() => setEditing({ ...p, images_text: toText(p.images), configs_text: (p.configs || []).map((c) => [c.config, c.price_label, c.area].join(" | ")).join("\n"), amenities_text: (p.amenities || []).map((a) => [a.name, a.group].join(" | ")).join("\n") })}
+                    <button data-testid={`admin-edit-project-${p.slug}`} onClick={() => setEditing({ ...p, images_text: toText(p.images), configs_text: (p.configs || []).map((c) => [c.config, c.price_label, c.area].join(" | ")).join("\n"), amenities_text: (p.amenities || []).map((a) => [a.name, a.group].join(" | ")).join("\n"), videos_text: (p.videos || []).map((v) => [v.url, v.title].filter(Boolean).join(" | ")).join("\n"), documents_text: (p.documents || []).map((d) => [d.name, d.url].join(" | ")).join("\n") })}
                       className="p-2 border border-slate-700 text-slate-300 hover:border-[#D4AF37] hover:text-[#E6C687] transition-colors"><Pencil size={13} /></button>
                     <button data-testid={`admin-delete-project-${p.slug}`} onClick={() => remove(p.id)}
                       className="p-2 border border-slate-700 text-slate-300 hover:border-red-500 hover:text-red-400 transition-colors"><Trash2 size={13} /></button>
@@ -129,7 +155,7 @@ export default function AdminProjects() {
                 </div>
               </div>
               <select data-testid="editor-status-select" value={editing.status} onChange={(e) => setEditing({ ...editing, status: e.target.value })} className="px-4 py-3 text-sm">
-                {["ONGOING", "UPCOMING", "DELIVERED"].map((s) => <option key={s}>{s}</option>)}
+                {["ONGOING", "READY_TO_MOVE", "UPCOMING", "DELIVERED"].map((s) => <option key={s} value={s}>{s.replace(/_/g, " ")}</option>)}
               </select>
               <select data-testid="editor-category-select" value={editing.category} onChange={(e) => setEditing({ ...editing, category: e.target.value })} className="px-4 py-3 text-sm">
                 {["RESIDENTIAL", "COMMERCIAL", "INDUSTRIAL"].map((s) => <option key={s}>{s}</option>)}
@@ -157,6 +183,18 @@ export default function AdminProjects() {
               <div className="sm:col-span-2">
                 <label className="text-[0.62rem] font-mono uppercase tracking-[0.2em] text-slate-400 block mb-2">Amenities — one per line: Name | Group</label>
                 <textarea data-testid="editor-amenities-input" rows={3} placeholder={"Clubhouse | Lifestyle"} value={editing.amenities_text ?? ""} onChange={(e) => setEditing({ ...editing, amenities_text: e.target.value })} className="w-full px-4 py-3 text-xs font-mono" />
+              </div>
+              <div className="sm:col-span-2">
+                <label className="text-[0.62rem] font-mono uppercase tracking-[0.2em] text-slate-400 block mb-2">Videos — one per line: YouTube or MP4 URL | Title</label>
+                <textarea data-testid="editor-videos-input" rows={3} placeholder={"https://youtube.com/watch?v=… | Walkthrough"} value={editing.videos_text ?? ""} onChange={(e) => setEditing({ ...editing, videos_text: e.target.value })} className="w-full px-4 py-3 text-xs font-mono" />
+              </div>
+              <div className="sm:col-span-2">
+                <label className="text-[0.62rem] font-mono uppercase tracking-[0.2em] text-slate-400 block mb-2">Documents / Brochures — one per line: Name | PDF URL</label>
+                <textarea data-testid="editor-documents-input" rows={3} placeholder={"E-Brochure | https://…/brochure.pdf"} value={editing.documents_text ?? ""} onChange={(e) => setEditing({ ...editing, documents_text: e.target.value })} className="w-full px-4 py-3 text-xs font-mono" />
+                <div className="mt-2">
+                  <input id="editor-pdf-file" data-testid="editor-pdf-file-input" type="file" accept="application/pdf" className="hidden" onChange={uploadPdf} />
+                  <label htmlFor="editor-pdf-file" data-testid="editor-pdf-upload-btn" className="outline-btn cursor-pointer">Upload PDF Brochure</label>
+                </div>
               </div>
               <label className="flex items-center gap-3 text-sm text-slate-300">
                 <input data-testid="editor-featured-checkbox" type="checkbox" checked={!!editing.featured} onChange={(e) => setEditing({ ...editing, featured: e.target.checked })} className="accent-[#D4AF37] w-4 h-4" />

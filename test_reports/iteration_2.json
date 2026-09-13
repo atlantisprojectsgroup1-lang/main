@@ -1,0 +1,35 @@
+{
+  "summary": "Iteration 2 validates the coverflow bug fix + new features (email popup, header call btn, project videos/documents/logo, PDF upload, READY_TO_MOVE status, portfolio tile images, GROUP label). Backend: 35/35 pytest cases passed including 6 new tests (PDF upload accepts application/pdf and produces downloadable /api/uploads/*.pdf, wrong mime rejected 422, lead stores email, videos/documents persist on project via admin PUT, project has logo field, READY_TO_MOVE filter works). Frontend Playwright: coverflow shows 5 slides with correct 3D transforms (translateX ±68/±136%, rotateY ±30/±60, scale 1/0.86/0.72, opacity 1/0.65/0.3 - no overlap), auto-advances every ~4s (dot 0->1), next/prev arrows advance/rewind, dot-3 click jumps to slide 3, and clicking the CENTER slide navigates to /projects/<slug> (fix confirmed - drag guard doesn't false-block synthetic clicks). Header call button visible with href=tel:+919708397083 and text '+91 97083 97083'. GROUP label rendered (fontSize 16px). Enquiry popup auto-opens on hero-enquire click; email input present; submit with name+phone+email shows Thank You; lead persisted in admin CRM with email field intact. Portfolio of Distinction tiles Residential/Commercial/Investment all render images (imgLoaded=true). Home status tabs = [All, ONGOING, READY TO MOVE, UPCOMING, DELIVERED] with spaces not underscores. Admin editor for atlantis-grand: logo preview, editor-videos-input, editor-documents-input all present; added test YouTube video and test PDF doc, saved, verified public /projects/atlantis-grand shows video-card-0 (opens video-player-modal with iframe), download-doc-0 (href = w3.org test PDF, text 'Test Brochure'), subnav includes Videos + Downloads, project-detail-logo present. Cleanup performed: removed test lines, saved, re-verified public page - no test content remains (video-card-0 & download-doc-0 gone, 'Test Walkthrough'/'Test Brochure' not in DOM).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Admin editor", "issues": ["Minor React hydration warning in console: 'In HTML, <span> cannot be a child of <option>' - somewhere a <select><option><span>… is rendered. Non-blocking but should be cleaned up."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "(Low) Remove <span> wrapper from inside <option> elements to silence hydration warning.",
+    "(Low, carried from iter1) list_projects: search + max_budget q['$or'] overwrite - still latent."
+  ],
+  "critical_code_review_comments": [
+    "Coverflow.jsx: drag guard uses drag.current.moved with a 60ms reset after pointerup; synthetic Playwright clicks work correctly, and pointer moves >12px correctly suppress click - well designed.",
+    "AdminProjects.jsx line 118: single JSX line packs 6 state mappings (images/configs/amenities/videos/documents/etc). Consider extracting a toEditorForm(p) helper for readability.",
+    "server.py admin_upload correctly restricts data URLs via regex to png/jpeg/webp/pdf with 15MB cap - good.",
+    "ProjectDetail.jsx video-player-modal onClick on backdrop closes on outer div, but inner iframe/content bubbles up; users get a visible video-player-close-btn - acceptable.",
+    "EnquiryPopup properly gates via sessionStorage / open-enquiry-popup event - once per session UX is intentional."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py (added TestNewFeatures class with 6 tests; fixed test_project_filters_meta to accept types|configs)"
+  ],
+  "success_rate": {"backend": "100% (35/35)", "frontend": "100% (all requested flows verified end-to-end incl. cleanup)"},
+  "test_credentials": "admin: atlantisprojectsgroup@gmail.com / Atlantis@2026 (verified)",
+  "seed_data_creation": "Test content (test YouTube video + test PDF doc) was added to atlantis-grand and CLEANED UP - public page no longer shows it. Test popup lead created and deleted. Backend TestNewFeatures also restores original videos/documents after edit.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Coverflow bug fix VERIFIED - center-slide click navigates, drag guard does not false-block. All new features (email popup field, header call btn, videos/documents sections + editor textareas, PDF upload, READY_TO_MOVE filter+labels with spaces, portfolio tile images, GROUP label) work. Test content was cleaned up. Only non-blocking issue is a React hydration warning about <span> inside <option>. Backend total 35 tests pass. If further coverage needed: mobile viewport, gallery lightbox, brute-force lockout, PDF upload >15MB rejection."
+}

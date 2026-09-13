@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, Lock, ChevronDown } from "lucide-react";
+import { Menu, X, Lock, ChevronDown, Phone } from "lucide-react";
+import api from "../lib/api";
 
 const LINKS = [
   { to: "/projects", label: "Projects", testid: "nav-link-projects" },
@@ -20,7 +21,12 @@ const POLICY_LINKS = [
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [phone, setPhone] = useState("+91 97083 97083");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    api.get("/company").then((r) => setPhone(r.data?.phones?.primary || "+91 97083 97083")).catch(() => {});
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -33,7 +39,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         <Link to="/" data-testid="nav-logo-link" className="flex items-center gap-3 group">
           <img src="/assets/atlantis-logo.png" alt="ATLANTIS Group" className="h-8 w-auto object-contain" />
-          <span className="block text-[0.55rem] font-mono tracking-[0.35em] text-[#C5A059]/80 self-end pb-1">GROUP</span>
+          <span className="block text-xs font-mono tracking-[0.35em] text-[#C5A059]/80 self-end pb-0.5">GROUP</span>
         </Link>
 
         <nav className="hidden lg:flex items-center gap-5">
@@ -60,6 +66,13 @@ export default function Navbar() {
         </nav>
 
         <div className="hidden lg:flex items-center gap-4">
+          <a href={`tel:${phone.replace(/\s/g, "")}`} data-testid="header-call-btn" title={`Call ${phone}`}
+            className="flex items-center gap-2.5 text-[#E6C687] hover:text-[#F3E5AB] transition-colors group/call">
+            <span className="w-9 h-9 rounded-full border border-[#C5A059]/40 flex items-center justify-center group-hover/call:border-[#D4AF37] group-hover/call:shadow-[0_0_16px_rgba(212,175,55,0.35)] transition-all duration-300">
+              <Phone size={14} />
+            </span>
+            <span className="hidden xl:inline text-xs font-mono tracking-wider">{phone}</span>
+          </a>
           <Link to="/admin" data-testid="nav-link-admin" className="text-slate-500 hover:text-[#E6C687] transition-colors" title="Admin">
             <Lock size={15} />
           </Link>
@@ -84,6 +97,9 @@ export default function Navbar() {
               {l.label}
             </Link>
           ))}
+          <a href={`tel:${phone.replace(/\s/g, "")}`} data-testid="mobile-header-call-btn" className="flex items-center gap-2.5 text-sm font-mono uppercase tracking-[0.2em] text-[#E6C687] pt-3 border-t border-slate-800">
+            <Phone size={15} /> Call {phone}
+          </a>
           <Link to="/admin" data-testid="mobile-nav-link-admin" onClick={() => setOpen(false)} className="text-sm font-mono uppercase tracking-[0.2em] text-slate-500">Admin</Link>
           <button data-testid="mobile-nav-cta-enquire" onClick={() => { setOpen(false); navigate("/contact"); }} className="gold-btn justify-center mt-2">Enquire</button>
         </div>

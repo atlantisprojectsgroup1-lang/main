@@ -58,7 +58,7 @@ export default function Home() {
   }, [heroSlides.length]);
   const coverItems = projects.filter((p) => p.featured).map((p) => ({
     key: p.id, image: p.images?.[0]?.url || HERO_BG, title: p.name,
-    eyebrow: p.status, subtitle: `${p.locality}, ${p.city} · ${p.price_label}`, slug: p.slug,
+    eyebrow: p.status.replace(/_/g, " "), subtitle: `${p.locality}, ${p.city} · ${p.price_label}`, slug: p.slug, logo: p.logo || "",
   }));
   const stats = company?.stats || {};
 
@@ -177,10 +177,10 @@ export default function Home() {
               <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal tracking-tight">Explore the <span className="gold-text italic">Landmarks</span></h2>
             </div>
             <div className="flex gap-2 flex-wrap" data-testid="projects-status-tabs">
-              {["ALL", "ONGOING", "UPCOMING", "DELIVERED"].map((t) => (
+              {["ALL", "ONGOING", "READY_TO_MOVE", "UPCOMING", "DELIVERED"].map((t) => (
                 <button key={t} data-testid={`projects-tab-${t.toLowerCase()}`} onClick={() => setTab(t)}
                   className={`text-[0.65rem] font-mono uppercase tracking-[0.2em] px-4 py-2 border transition-all duration-300 ${tab === t ? "border-[#D4AF37] text-[#F3E5AB] bg-[#D4AF37]/10" : "border-slate-700 text-slate-400 hover:border-[#C5A059]/50"}`}>
-                  {t}
+                  {t === "ALL" ? "All" : t.replace(/_/g, " ")}
                 </button>
               ))}
             </div>
@@ -202,16 +202,24 @@ export default function Home() {
           <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal tracking-tight mb-12">A Portfolio of <span className="gold-text italic">Distinction</span></h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { icon: Building2, title: "Residential", desc: "Low-density luxury apartments, penthouses & sky villas designed around light, air and privacy.", testid: "cat-residential-tile", q: "RESIDENTIAL" },
-              { icon: Landmark, title: "Commercial", desc: "High-street retail and showroom spaces in high-growth corridors with strong internal footfall.", testid: "cat-commercial-tile", q: "COMMERCIAL" },
-              { icon: Factory, title: "Investment", desc: "High-appreciation addresses minutes from the international airport and IT corridors.", testid: "cat-industrial-tile", q: "" },
+              { icon: Building2, title: "Residential", desc: "Low-density luxury apartments, penthouses & sky villas designed around light, air and privacy.", testid: "cat-residential-tile", q: "RESIDENTIAL", img: "https://atlantisgroup.in/assets/images/heights/renders/heights-garden-sunset.webp" },
+              { icon: Landmark, title: "Commercial", desc: "High-street retail and showroom spaces in high-growth corridors with strong internal footfall.", testid: "cat-commercial-tile", q: "COMMERCIAL", img: "https://atlantisprojects.in/wp-content/uploads/2026/05/23_00105-1024x576.jpg" },
+              { icon: Factory, title: "Investment", desc: "High-appreciation addresses minutes from the international airport and IT corridors.", testid: "cat-industrial-tile", q: "", img: "https://atlantisprojects.in/wp-content/uploads/2026/05/central1.jpg" },
             ].map((c) => (
               <Link key={c.title} to={c.q ? `/projects?category=${c.q}` : "/projects"} data-testid={c.testid}
-                className="group glass-card p-8 hover:border-[#D4AF37]/50 hover:-translate-y-2 transition-all duration-500">
-                <c.icon size={28} className="text-[#D4AF37] mb-6" />
-                <h3 className="font-serif text-2xl mb-3">{c.title}</h3>
-                <p className="text-sm text-slate-400 leading-relaxed mb-6">{c.desc}</p>
-                <span className="flex items-center gap-1 text-[0.65rem] font-mono uppercase tracking-[0.2em] text-[#E6C687] group-hover:gap-2 transition-all">Explore <ArrowUpRight size={13} /></span>
+                className="group glass-card overflow-hidden hover:border-[#D4AF37]/50 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(212,175,55,0.12)] transition-all duration-500">
+                <div className="relative h-44 overflow-hidden">
+                  <img src={c.img} alt={`${c.title} — ATLANTIS`} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#101B2E] via-[#050B14]/30 to-transparent" />
+                  <span className="absolute bottom-4 left-6 w-11 h-11 glass-card border-[#D4AF37]/50 flex items-center justify-center">
+                    <c.icon size={20} className="text-[#D4AF37]" />
+                  </span>
+                </div>
+                <div className="p-7">
+                  <h3 className="font-serif text-2xl mb-3">{c.title}</h3>
+                  <p className="text-sm text-slate-400 leading-relaxed mb-6">{c.desc}</p>
+                  <span className="flex items-center gap-1 text-[0.65rem] font-mono uppercase tracking-[0.2em] text-[#E6C687] group-hover:gap-2 transition-all">Explore <ArrowUpRight size={13} /></span>
+                </div>
               </Link>
             ))}
           </div>

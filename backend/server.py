@@ -506,13 +506,14 @@ class UploadIn(BaseModel):
 @api.post("/admin/upload")
 async def admin_upload(body: UploadIn, user=Depends(get_current_user)):
     import base64
-    m = re.match(r"^data:image/(png|jpeg|jpg|webp);base64,(.+)$", body.data_url or "", re.S)
+    m = re.match(r"^data:(image/(?:png|jpeg|jpg|webp)|application/pdf);base64,(.+)$", body.data_url or "", re.S)
     if not m:
-        raise HTTPException(status_code=422, detail="Only PNG/JPEG/WebP images are accepted.")
+        raise HTTPException(status_code=422, detail="Only PNG/JPEG/WebP images or PDF files are accepted.")
     raw = base64.b64decode(m.group(2))
-    if len(raw) > 5 * 1024 * 1024:
-        raise HTTPException(status_code=413, detail="Image exceeds the 5 MB limit.")
-    ext = "png" if m.group(1) == "png" else ("jpg" if m.group(1) in ("jpeg", "jpg") else "webp")
+    if len(raw) > 15 * 1024 * 1024:
+        raise HTTPException(status_code=413, detail="File exceeds the 15 MB limit.")
+    mime = m.group(1)
+    ext = {"image/png": "png", "image/jpeg": "jpg", "image/jpg": "jpg", "image/webp": "webp", "application/pdf": "pdf"}[mime]
     name = f"{new_id()}.{ext}"
     (ROOT_DIR / "uploads" / name).write_bytes(raw)
     return {"url": f"/api/uploads/{name}"}

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { MapPin, ShieldCheck, X, ChevronRight, Plane, Train, Hospital, GraduationCap, ShoppingBag, Navigation, Calculator } from "lucide-react";
+import { MapPin, ShieldCheck, X, ChevronRight, Plane, Train, Hospital, GraduationCap, ShoppingBag, Navigation, Calculator, Play, FileText, Download } from "lucide-react";
 import api from "../lib/api";
 import SEO from "../components/SEO";
 import Coverflow from "../components/Coverflow";
@@ -61,6 +61,7 @@ export default function ProjectDetail() {
   const [project, setProject] = useState(null);
   const [company, setCompany] = useState(null);
   const [lightbox, setLightbox] = useState(null);
+  const [videoPlayer, setVideoPlayer] = useState(null);
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
@@ -97,6 +98,8 @@ export default function ProjectDetail() {
     ["Overview", "overview", "detail-nav-overview"],
     ["Showcase", "showcase", "detail-nav-showcase"],
     ["Gallery", "gallery", "detail-nav-gallery"],
+    ["Videos", "videos", "detail-nav-videos"],
+    ["Downloads", "downloads", "detail-nav-downloads"],
     ["Amenities", "amenities", "detail-nav-amenities"],
     ["Specifications", "specs", "detail-nav-specs"],
     ["Location", "location", "detail-nav-location"],
@@ -221,6 +224,64 @@ export default function ProjectDetail() {
                   <img src={img.url} alt={img.alt} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#050B14]/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </button>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Videos */}
+      {project.videos?.length > 0 && (
+        <section id="videos" className="py-16 lg:py-24 scroll-mt-32">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p className="eyebrow mb-3">Watch</p>
+            <h2 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight mb-10">Video <span className="gold-text italic">Gallery</span></h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {project.videos.map((v, i) => {
+                const yt = (v.url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([\w-]{6,})/) || [])[1];
+                return (
+                  <button key={i} data-testid={`video-card-${i}`} onClick={() => setVideoPlayer({ ...v, yt })}
+                    className="group relative h-56 overflow-hidden border border-[#C5A059]/20 text-left hover:border-[#D4AF37]/50 transition-colors">
+                    {yt ? (
+                      <img src={`https://img.youtube.com/vi/${yt}/hqdefault.jpg`} alt={v.title || "Project video"} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                    ) : (
+                      <video src={v.url} muted preload="metadata" className="w-full h-full object-cover" />
+                    )}
+                    <div className="absolute inset-0 bg-[#050B14]/40 flex items-center justify-center">
+                      <span className="w-14 h-14 rounded-full glass-card border-[#D4AF37]/60 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <Play size={20} className="text-[#F3E5AB] ml-0.5" fill="currentColor" />
+                      </span>
+                    </div>
+                    <div className="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-[#050B14] to-transparent">
+                      <p className="text-sm text-slate-200">{v.title || "Project video"}</p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Downloads */}
+      {project.documents?.length > 0 && (
+        <section id="downloads" className="py-16 lg:py-24 bg-[#0A1322]/50 scroll-mt-32">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p className="eyebrow mb-3">Documents</p>
+            <h2 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight mb-10">Brochures & <span className="gold-text italic">Downloads</span></h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {project.documents.map((d, i) => (
+                <a key={i} data-testid={`download-doc-${i}`} href={d.url} target="_blank" rel="noopener noreferrer" download
+                  className="glass-card p-5 flex items-center gap-4 hover:border-[#D4AF37]/50 transition-colors group">
+                  <span className="w-11 h-11 border border-[#C5A059]/40 flex items-center justify-center shrink-0">
+                    <FileText size={18} className="text-[#D4AF37]" />
+                  </span>
+                  <span className="flex-1 min-w-0">
+                    <span className="block text-sm text-slate-200 truncate">{d.name}</span>
+                    <span className="block text-[0.6rem] font-mono text-slate-500 uppercase tracking-wider mt-0.5">PDF · Instant Download</span>
+                  </span>
+                  <Download size={16} className="text-slate-500 group-hover:text-[#E6C687] transition-colors shrink-0" />
+                </a>
               ))}
             </div>
           </div>
@@ -384,6 +445,19 @@ export default function ProjectDetail() {
         <div data-testid="gallery-lightbox" className="fixed inset-0 z-[60] bg-[#050B14]/95 backdrop-blur-lg flex items-center justify-center p-6" onClick={() => setLightbox(null)}>
           <button data-testid="lightbox-close-btn" className="absolute top-6 right-6 text-slate-300 hover:text-white" aria-label="Close"><X size={28} /></button>
           <img src={lightbox} alt="Gallery" className="max-w-full max-h-full object-contain border border-[#C5A059]/30" />
+        </div>
+      )}
+
+      {/* Video player modal */}
+      {videoPlayer && (
+        <div data-testid="video-player-modal" className="fixed inset-0 z-[60] bg-[#050B14]/95 backdrop-blur-lg flex items-center justify-center p-6" onClick={() => setVideoPlayer(null)}>
+          <button data-testid="video-player-close-btn" className="absolute top-6 right-6 text-slate-300 hover:text-white" aria-label="Close video"><X size={28} /></button>
+          {videoPlayer.yt ? (
+            <iframe src={`https://www.youtube.com/embed/${videoPlayer.yt}?autoplay=1`} title={videoPlayer.title || "Project video"}
+              className="w-full max-w-4xl aspect-video border border-[#C5A059]/30" allow="autoplay; fullscreen; picture-in-picture" allowFullScreen />
+          ) : (
+            <video src={videoPlayer.url} controls autoPlay className="max-w-full max-h-[85vh] border border-[#C5A059]/30" />
+          )}
         </div>
       )}
     </div>

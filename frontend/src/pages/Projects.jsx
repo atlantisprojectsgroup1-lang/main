@@ -6,7 +6,7 @@ import api from "../lib/api";
 import SEO from "../components/SEO";
 import ProjectCard from "../components/ProjectCard";
 
-const STATUSES = ["", "ONGOING", "UPCOMING", "DELIVERED"];
+const STATUSES = ["", "ONGOING", "READY_TO_MOVE", "UPCOMING", "DELIVERED"];
 
 export default function Projects() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -55,23 +55,23 @@ export default function Projects() {
             {STATUSES.map((s) => (
               <button key={s || "all"} data-testid={`filter-status-${(s || "all").toLowerCase()}`} onClick={() => set("status", s)}
                 className={`text-[0.62rem] font-mono uppercase tracking-[0.18em] px-3.5 py-2 border transition-all ${filters.status === s ? "border-[#D4AF37] text-[#F3E5AB] bg-[#D4AF37]/10" : "border-slate-700 text-slate-400"}`}>
-                {s || "All"}
+                {s ? s.replace(/_/g, " ") : "All"}
               </button>
             ))}
           </div>
           <div className="flex gap-3 flex-1 flex-wrap">
             <select data-testid="filter-category-select" value={filters.category} onChange={(e) => set("category", e.target.value)} className="px-3 py-2.5 text-xs flex-1 min-w-[130px]">
-              <option value="">Category — All</option>
+              <option value="">Category</option>
               <option value="RESIDENTIAL">Residential</option>
               <option value="COMMERCIAL">Commercial</option>
               <option value="INDUSTRIAL">Industrial</option>
             </select>
             <select data-testid="filter-city-select" value={filters.city} onChange={(e) => set("city", e.target.value)} className="px-3 py-2.5 text-xs flex-1 min-w-[130px]">
-              <option value="">City — All</option>
+              <option value="">City</option>
               {meta.cities.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
             <select data-testid="filter-ptype-select" value={filters.ptype} onChange={(e) => set("ptype", e.target.value)} className="px-3 py-2.5 text-xs flex-1 min-w-[130px]">
-              <option value="">Property Type — All</option>
+              <option value="">Property Type</option>
               {meta.types.map((t) => <option key={t} value={t}>{t}</option>)}
             </select>
           </div>

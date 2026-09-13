@@ -6,7 +6,7 @@ import api, { formatApiError } from "../lib/api";
 export default function EnquiryPopup() {
   const [open, setOpen] = useState(false);
   const [projects, setProjects] = useState([]);
-  const [form, setForm] = useState({ name: "", phone: "", project: "", budget: "", message: "" });
+  const [form, setForm] = useState({ name: "", phone: "", email: "", project: "", budget: "", message: "" });
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
 
@@ -35,7 +35,7 @@ export default function EnquiryPopup() {
     try {
       const proj = projects.find((p) => p.id === form.project);
       await api.post("/leads", {
-        name: form.name, phone: form.phone, message: form.message,
+        name: form.name, phone: form.phone, email: form.email, message: form.message,
         project_id: form.project, project_name: proj?.name || "",
         budget: form.budget, source: "enquiry_popup",
       });
@@ -92,6 +92,8 @@ export default function EnquiryPopup() {
                 onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full px-4 py-3 text-sm" />
               <input data-testid="popup-enquiry-phone-input" required placeholder="Mobile number" value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full px-4 py-3 text-sm" />
+              <input data-testid="popup-enquiry-email-input" type="email" placeholder="Email address" value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full px-4 py-3 text-sm" />
               <textarea data-testid="popup-enquiry-message-input" rows={2} placeholder="Anything specific? (config, floor, facing…)" value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })} className="w-full px-4 py-3 text-sm" />
               <button data-testid="popup-enquiry-submit-btn" type="submit" disabled={loading} className="gold-btn w-full justify-center disabled:opacity-60">

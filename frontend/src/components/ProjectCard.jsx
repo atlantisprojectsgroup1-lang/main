@@ -3,6 +3,7 @@ import { MapPin, ArrowUpRight, ShieldCheck } from "lucide-react";
 
 const STATUS_STYLES = {
   ONGOING: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
+  READY_TO_MOVE: "bg-violet-500/15 text-violet-300 border-violet-500/30",
   UPCOMING: "bg-amber-500/15 text-amber-400 border-amber-500/30",
   DELIVERED: "bg-sky-500/15 text-sky-400 border-sky-500/30",
 };
@@ -24,7 +25,7 @@ export default function ProjectCard({ project, index = 0 }) {
         <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-transparent to-transparent" />
         <div className="absolute top-4 left-4 flex gap-2">
           <span className={`text-[0.6rem] font-mono uppercase tracking-[0.2em] px-3 py-1.5 border backdrop-blur-md ${STATUS_STYLES[project.status] || STATUS_STYLES.ONGOING}`}>
-            {project.status}
+            {project.status.replace(/_/g, " ")}
           </span>
           {project.is_hot_selling && (
             <span className="hot-badge text-[0.6rem] font-mono uppercase tracking-[0.2em] px-3 py-1.5 backdrop-blur-md">Hot Selling</span>

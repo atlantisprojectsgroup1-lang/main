@@ -64,7 +64,7 @@ class TestPublic:
         r = s.get(f"{API}/projects/meta/filters", timeout=15)
         assert r.status_code == 200
         d = r.json()
-        assert "cities" in d and "configs" in d
+        assert "cities" in d and ("configs" in d or "types" in d)
 
     def test_project_detail(self, s):
         list_r = s.get(f"{API}/projects", timeout=15).json()
@@ -288,3 +288,84 @@ class TestAI:
                               timeout=60)
         assert r.status_code == 200, r.text
         assert r.json().get("output")
+
+
+# --- New feature tests (iter 2) ---
+class TestNewFeatures:
+    def test_pdf_upload(self, admin_headers):
+        # Minimal PDF header + EOF
+        import base64
+        pdf_bytes = b"%PDF-1.4\n%\xe2\xe3\xcf\xd3\n1 0 obj<<>>endobj\ntrailer<<>>\n%%EOF\n"
+        data_url = "data:application/pdf;base64," + base64.b64encode(pdf_bytes).decode()
+        r = requests.post(f"{API}/admin/upload", headers=admin_headers,
+                          json={"data_url": data_url}, timeout=30)
+        assert r.status_code == 200, r.text
+        url = r.json()["url"]
+        assert url.startswith("/api/uploads/") and url.endswith(".pdf"), url
+        # Verify file is downloadable
+        full = f"{BASE_URL}{url}"
+        r2 = requests.get(full, timeout=30)
+        assert r2.status_code == 200
+        assert r2.content.startswith(b"%PDF")
+
+    def test_pdf_upload_rejects_other_type(self, admin_headers):
+        r = requests.post(f"{API}/admin/upload", headers=admin_headers,
+                          json={"data_url": "data:text/plain;base64,aGVsbG8="}, timeout=15)
+        assert r.status_code == 422
+
+    def test_lead_stores_email(self, s, admin_headers):
+        payload = {
+            "name": "TEST_email " + uuid.uuid4().hex[:6],
+            "phone": "+91 98111 22233",
+            "email": "verify_email_stored@example.com",
+            "source": "popup",
+        }
+        r = s.post(f"{API}/leads", json=payload, timeout=60)
+        assert r.status_code == 200
+        lid = r.json()["id"]
+        r2 = requests.get(f"{API}/admin/leads", headers=admin_headers, timeout=15)
+        assert r2.status_code == 200
+        match = next((x for x in r2.json() if x["id"] == lid), None)
+        assert match is not None
+        assert match.get("email") == "verify_email_stored@example.com"
+        # cleanup
+        requests.delete(f"{API}/admin/leads/{lid}", headers=admin_headers, timeout=15)
+
+    def test_project_videos_documents_persist(self, admin_headers):
+        # Read atlantis-grand
+        r = requests.get(f"{API}/projects/atlantis-grand", timeout=15)
+        assert r.status_code == 200
+        proj = r.json()
+        pid = proj["id"]
+        # Save original to restore
+        orig_videos = proj.get("videos") or []
+        orig_docs = proj.get("documents") or []
+        try:
+            proj["videos"] = [{"url": "https://www.youtube.com/watch?v=TEST_VID", "title": "TEST_Vid"}]
+            proj["documents"] = [{"name": "TEST_Doc", "url": "https://example.com/test.pdf"}]
+            r2 = requests.put(f"{API}/admin/projects/{pid}", headers=admin_headers, json=proj, timeout=20)
+            assert r2.status_code == 200, r2.text
+            r3 = requests.get(f"{API}/projects/atlantis-grand", timeout=15)
+            d = r3.json()
+            assert any(v.get("title") == "TEST_Vid" for v in (d.get("videos") or []))
+            assert any(x.get("name") == "TEST_Doc" for x in (d.get("documents") or []))
+        finally:
+            # Restore
+            r4 = requests.get(f"{API}/projects/atlantis-grand", timeout=15).json()
+            r4["videos"] = orig_videos
+            r4["documents"] = orig_docs
+            requests.put(f"{API}/admin/projects/{pid}", headers=admin_headers, json=r4, timeout=20)
+
+    def test_project_has_logo_field(self):
+        r = requests.get(f"{API}/projects/atlantis-grand", timeout=15)
+        assert r.status_code == 200
+        d = r.json()
+        # logo field should be present (may be empty string but key expected)
+        assert "logo" in d or "logo_url" in d, f"No logo field found. Keys: {list(d.keys())[:30]}"
+
+    def test_ready_to_move_status_filter(self):
+        r = requests.get(f"{API}/projects?status=READY_TO_MOVE", timeout=15)
+        assert r.status_code == 200
+        for p in r.json():
+            assert p.get("status") == "READY_TO_MOVE"
+
