@@ -32,6 +32,23 @@ api = APIRouter(prefix="/api")
 JWT_SECRET = os.environ["JWT_SECRET"]
 JWT_ALGORITHM = "HS256"
 EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY", "")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
+LLM_API_KEY = OPENAI_API_KEY or EMERGENT_LLM_KEY
+LLM_BASE_URL = os.environ.get("LLM_BASE_URL") or (None if OPENAI_API_KEY else "https://integrations.emergentagent.com/llm")
+LLM_MODEL = os.environ.get("LLM_MODEL", "gpt-5.4")
+
+_llm_client = None
+
+
+def get_llm_client():
+    global _llm_client
+    if _llm_client is None:
+        from openai import AsyncOpenAI
+        kwargs = {"api_key": LLM_API_KEY}
+        if LLM_BASE_URL:
+            kwargs["base_url"] = LLM_BASE_URL
+        _llm_client = AsyncOpenAI(**kwargs)
+    return _llm_client
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -238,22 +255,23 @@ class LeadIn(BaseModel):
 
 
 async def ai_score_lead(lead: dict) -> dict:
-    if not EMERGENT_LLM_KEY:
+    if not LLM_API_KEY:
         return {"score": "WARM", "score_reason": "AI scoring unavailable — defaulting to Warm."}
     try:
-        from emergentintegrations.llm.chat import LlmChat, UserMessage
-        chat = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
-            session_id=f"lead-score-{lead['id']}",
-            system_message=("You are a real-estate lead qualification engine for ATLANTIS, a luxury developer in "
-                            "Chandigarh Tricity (ticket sizes ₹1.4 Cr+). Classify the lead HOT, WARM or COLD and give a "
-                            "one-line reason. Reply strictly as JSON: {\"score\": \"HOT|WARM|COLD\", \"reason\": \"...\"}"),
-        )
         prompt = (f"Name: {lead.get('name')}\nPhone: {lead.get('phone')}\nEmail: {lead.get('email')}\n"
                   f"Project interest: {lead.get('project_name')}\nBudget: {lead.get('budget')}\n"
                   f"Config interest: {lead.get('config_interest')}\nMessage: {lead.get('message')}\nSource: {lead.get('source')}")
-        resp = await chat.send_message(UserMessage(text=prompt))
-        text = resp if isinstance(resp, str) else getattr(resp, "content", str(resp))
+        resp = await get_llm_client().chat.completions.create(
+            model=LLM_MODEL,
+            messages=[
+                {"role": "system", "content": (
+                    "You are a real-estate lead qualification engine for ATLANTIS, a luxury developer in "
+                    "Chandigarh Tricity (ticket sizes ₹1.4 Cr+). Classify the lead HOT, WARM or COLD and give a "
+                    "one-line reason. Reply strictly as JSON: {\"score\": \"HOT|WARM|COLD\", \"reason\": \"...\"}")},
+                {"role": "user", "content": prompt},
+            ],
+        )
+        text = resp.choices[0].message.content or ""
         m = re.search(r"\{.*\}", text, re.S)
         data = json.loads(m.group(0)) if m else {}
         score = str(data.get("score", "WARM")).upper()
@@ -318,7 +336,7 @@ async def build_chat_context() -> str:
 
 @api.post("/chat")
 async def ai_chat(body: ChatIn):
-    if not EMERGENT_LLM_KEY:
+    if not LLM_API_KEY:
         raise HTTPException(status_code=503, detail="AI concierge is not configured.")
     session_id = re.sub(r"[^a-zA-Z0-9\-]", "", body.session_id)[:64] or new_id()
     await db.chat_messages.insert_one({"id": new_id(), "session_id": session_id, "role": "user",
@@ -327,30 +345,30 @@ async def ai_chat(body: ChatIn):
     context = await build_chat_context()
     history_text = "\n".join(f"{m['role'].upper()}: {m['content']}" for m in history[-12:])
 
-    from emergentintegrations.llm.chat import LlmChat, UserMessage, TextDelta, StreamDone
-    chat = LlmChat(
-        api_key=EMERGENT_LLM_KEY,
-        session_id=f"concierge-{session_id}",
-        system_message=(
-            "You are the ATLANTIS AI Luxury Concierge for a premium real estate developer in Chandigarh Tricity. "
-            "Answer questions about projects, pricing, availability, possession, location and amenities ONLY from the "
-            "context below. If a fact is not in the context, say the team will confirm and invite the visitor to share "
-            "their name and phone number, or call +91 9041795879. Be warm, concise, premium in tone. Never invent "
-            "prices, RERA numbers or dates. When a visitor shows buying intent, politely ask for their name and phone "
-            "number so the relationship team can reach out.\n\nCONTEXT:\n" + context +
-            "\n\nRECENT CONVERSATION:\n" + history_text
-        ),
-    ).with_model("openai", "gpt-5.4")
+    system_message = (
+        "You are the ATLANTIS AI Luxury Concierge for a premium real estate developer in Chandigarh Tricity. "
+        "Answer questions about projects, pricing, availability, possession, location and amenities ONLY from the "
+        "context below. If a fact is not in the context, say the team will confirm and invite the visitor to share "
+        "their name and phone number, or call +91 9041795879. Be warm, concise, premium in tone. Never invent "
+        "prices, RERA numbers or dates. When a visitor shows buying intent, politely ask for their name and phone "
+        "number so the relationship team can reach out.\n\nCONTEXT:\n" + context +
+        "\n\nRECENT CONVERSATION:\n" + history_text
+    )
 
     async def event_gen():
         full = []
         try:
-            async for ev in chat.stream_message(UserMessage(text=body.message)):
-                if isinstance(ev, TextDelta):
-                    full.append(ev.content)
-                    yield f"data: {json.dumps({'token': ev.content})}\n\n"
-                elif isinstance(ev, StreamDone):
-                    break
+            stream = await get_llm_client().chat.completions.create(
+                model=LLM_MODEL,
+                messages=[{"role": "system", "content": system_message},
+                          {"role": "user", "content": body.message}],
+                stream=True,
+            )
+            async for chunk in stream:
+                if chunk.choices and chunk.choices[0].delta.content:
+                    token = chunk.choices[0].delta.content
+                    full.append(token)
+                    yield f"data: {json.dumps({'token': token})}\n\n"
         except Exception as e:
             logger.warning(f"chat stream error: {e}")
             yield f"data: {json.dumps({'token': 'I apologise — I am momentarily unavailable. Please call +91 9041795879 or leave your number and we will call you back.'})}\n\n"
@@ -609,7 +627,7 @@ class AiGenIn(BaseModel):
 
 @api.post("/admin/ai/generate")
 async def admin_ai_generate(body: AiGenIn, user=Depends(get_current_user)):
-    if not EMERGENT_LLM_KEY:
+    if not LLM_API_KEY:
         raise HTTPException(status_code=503, detail="AI is not configured.")
     prompts = {
         "description": "Write a premium, editorial 3-paragraph project description for this luxury real estate project. No invented facts beyond what is given; mark unknowns as [TBC]. Project context:\n",
@@ -620,16 +638,15 @@ async def admin_ai_generate(body: AiGenIn, user=Depends(get_current_user)):
     }
     if body.kind not in prompts:
         raise HTTPException(status_code=422, detail="Unknown generation kind")
-    from emergentintegrations.llm.chat import LlmChat, UserMessage
-    chat = LlmChat(
-        api_key=EMERGENT_LLM_KEY,
-        session_id=f"studio-{new_id()}",
-        system_message="You are the ATLANTIS AI Content Studio — a luxury real estate copywriter for the Chandigarh Tricity market. Be precise, editorial, never invent facts.",
-    ).with_model("openai", "gpt-5.4")
     try:
-        resp = await chat.send_message(UserMessage(text=prompts[body.kind] + body.context))
-        text = resp if isinstance(resp, str) else getattr(resp, "content", str(resp))
-        return {"kind": body.kind, "output": text}
+        resp = await get_llm_client().chat.completions.create(
+            model=LLM_MODEL,
+            messages=[
+                {"role": "system", "content": "You are the ATLANTIS AI Content Studio — a luxury real estate copywriter for the Chandigarh Tricity market. Be precise, editorial, never invent facts."},
+                {"role": "user", "content": prompts[body.kind] + body.context},
+            ],
+        )
+        return {"kind": body.kind, "output": resp.choices[0].message.content or ""}
     except Exception as e:
         logger.warning(f"AI generate failed: {e}")
         raise HTTPException(status_code=502, detail="AI generation failed. Please retry.")

@@ -11,10 +11,11 @@ Production-ready, SEO-optimized, AI-assisted platform for ATLANTIS (real estate 
 
 ## Architecture
 - Frontend: React 19 + Tailwind + framer-motion + react-helmet-async (SEO) + recharts. Routes: /, /projects, /projects/:slug, /portfolio, /about, /blog, /blog/:slug, /contact, /admin/* (login, dashboard, projects CMS, CRM kanban, AI studio, settings)
-- Backend: FastAPI + MongoDB (motor), JWT cookie/bearer auth with bcrypt + brute-force lockout, SSE-streamed AI chat (Emergent LLM key, gpt-5.4), AI lead scoring (background task), AI content studio
+- Backend: FastAPI + MongoDB (motor), JWT cookie/bearer auth with bcrypt + brute-force lockout, SSE-streamed AI chat, AI lead scoring (background task), AI content studio. LLM calls use the official `openai` SDK (openai==1.99.9): defaults to EMERGENT_LLM_KEY via Emergent proxy (https://integrations.emergentagent.com/llm, model gpt-5.4); on external hosts (Vercel) set OPENAI_API_KEY (+ optional LLM_MODEL, LLM_BASE_URL) and the same code uses real OpenAI — no emergentintegrations/litellm dependencies (removed for Vercel PyPI-only builds)
 - Seeded from real scraped data: 6 projects (Three Sixty, The Marq, Central Park, Grand, Heights, at Wave), company profile, 5 leadership profiles, 10 design partners, 3 FAQs, 6 blog posts, Grand specs/amenities/landmarks
 
 ## Implemented (June 12, 2026)
+- Vercel build fix: removed `emergentintegrations==0.2.0` (private index package, unresolvable on Vercel) and the private litellm wheel URL from requirements.txt; rewrote all 3 AI call sites (chat SSE stream, lead scoring, Content Studio) in server.py to the official `openai` SDK with a lazy shared AsyncOpenAI client (env-driven: OPENAI_API_KEY > EMERGENT_LLM_KEY, LLM_MODEL default gpt-5.4). Verified: chat streams tokens, lead scored HOT with reason, AI generate returns alt text. Vercel env needed: MONGO_URL, DB_NAME, JWT_SECRET, ADMIN_EMAIL, ADMIN_PASSWORD, OPENAI_API_KEY (else AI features degrade gracefully to 503/fallback)
 - Brand sync update: real ATLANTIS wordmark logo (from atlantisgroup.in) in header + footer, brand favicon, hero headings bumped to medium/semibold weight
 - Header + footer nav: About Us, Contact Us, Privacy Policy (/privacy-policy), Booking & Cancellation Policy (/booking-cancellation-policy) — both policy pages live
 - Social connect links in footer (Instagram + LinkedIn synced from atlantisgroup.in; Facebook/YouTube editable in Admin → Settings → Social Media Links)
