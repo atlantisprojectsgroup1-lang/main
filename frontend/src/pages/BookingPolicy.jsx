@@ -10,6 +10,7 @@ const SECTIONS = [
   { title: "7. RERA Compliance", body: "All ATLANTIS projects are registered with the Punjab Real Estate Regulatory Authority. Buyers are encouraged to verify registration details (e.g., Atlantis Three Sixty — PBRERA-SAS79-PR1159) on the official RERA portal before booking." },
   { title: "8. Channel Partner Disclosure", body: "This website is designed, published and managed by an authorised channel partner of ATLANTIS — QUALITY REAL ESTATE (https://qualityrealestate.in). All bookings are executed directly with the developer under its official terms; the channel partner facilitates enquiry, site visits and documentation support only." },
   { title: "9. Jurisdiction", body: "All disputes are subject to the jurisdiction of courts/fora at SAS Nagar (Mohali), Punjab, and the remedies available under the Real Estate (Regulation and Development) Act, 2016." },
+  { title: "10. Contact", body: "ATLANTIS Group — Corporate Office: Sector 82A, Mohali, Punjab, India · Phone / WhatsApp: +91 9041795879 · Email: support@atlantisprojectsgroup.com · Web: atlantisprojectsgroup.com" },
 ];
 
 export default function BookingPolicy() {

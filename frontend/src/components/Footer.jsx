@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
-import { Phone, MapPin, Instagram, Linkedin, Facebook, Youtube } from "lucide-react";
+import { Phone, MapPin, Mail, Instagram, Linkedin, Facebook, Youtube } from "lucide-react";
 
 const SOCIAL_ICONS = { Instagram, LinkedIn: Linkedin, Facebook, YouTube: Youtube };
 
 export default function Footer({ company }) {
   const office = company?.offices?.[0];
-  const phone = company?.phones?.primary || "+91 97083 97083";
+  const phone = company?.phones?.primary || "+91 9041795879";
   return (
     <footer data-testid="site-footer" className="border-t border-[#C5A059]/20 bg-[#050B14]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 grid grid-cols-1 md:grid-cols-5 gap-12">
@@ -55,6 +55,11 @@ export default function Footer({ company }) {
             <a href={`tel:${phone.replace(/\s/g, "")}`} data-testid="footer-phone-link" className="flex items-center gap-2 hover:text-[#E6C687] transition-colors">
               <Phone size={14} className="text-[#C5A059]" /> {phone}
             </a>
+            {office?.email && (
+              <a href={`mailto:${office.email}`} data-testid="footer-email-link" className="flex items-center gap-2 hover:text-[#E6C687] transition-colors">
+                <Mail size={14} className="text-[#C5A059]" /> {office.email}
+              </a>
+            )}
             {office && (
               <div className="flex items-start gap-2">
                 <MapPin size={14} className="text-[#C5A059] mt-1 shrink-0" />

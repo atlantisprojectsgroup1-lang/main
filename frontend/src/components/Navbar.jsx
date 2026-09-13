@@ -21,10 +21,10 @@ const POLICY_LINKS = [
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [phone, setPhone] = useState("+91 97083 97083");
+  const [phone, setPhone] = useState("+91 9041795879");
 
   useEffect(() => {
-    api.get("/company").then((r) => setPhone(r.data?.phones?.primary || "+91 97083 97083")).catch(() => {});
+    api.get("/company").then((r) => setPhone(r.data?.phones?.primary || "+91 9041795879")).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -78,9 +78,15 @@ export default function Navbar() {
           <button data-testid="nav-cta-enquire-button" onClick={() => window.dispatchEvent(new Event("open-enquiry-popup"))} className="gold-btn">Enquire</button>
         </div>
 
-        <button data-testid="nav-mobile-menu-btn" className="lg:hidden text-slate-200" onClick={() => setOpen(!open)} aria-label="Menu">
-          {open ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div className="flex items-center gap-3 lg:hidden">
+          <a href={`tel:${phone.replace(/\s/g, "")}`} data-testid="header-call-btn-mobile" aria-label={`Call ${phone}`}
+            className="w-10 h-10 rounded-full border border-[#C5A059]/40 flex items-center justify-center text-[#E6C687] animate-pulse-gold">
+            <Phone size={16} />
+          </a>
+          <button data-testid="nav-mobile-menu-btn" className="text-slate-200" onClick={() => setOpen(!open)} aria-label="Menu">
+            {open ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
       {open && (

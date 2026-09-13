@@ -345,7 +345,7 @@ export default function Home() {
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <p className="eyebrow mb-4">Begin Your Journey</p>
           <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal tracking-tight mb-4">Reserve Your <span className="gold-text italic">Residence</span></h2>
-          <p className="text-slate-400 font-light mb-10">Our team will reach you within 24 hours to discuss availability, pricing, and a personal site visit. Prefer to speak directly? <a href="tel:+919708397083" data-testid="cta-call-link" className="text-[#E6C687]">+91 97083 97083</a></p>
+          <p className="text-slate-400 font-light mb-10">Our team will reach you within 24 hours to discuss availability, pricing, and a personal site visit. Prefer to speak directly? <a href="tel:+919041795879" data-testid="cta-call-link" className="text-[#E6C687]">+91 9041795879</a></p>
           <div className="glass-card p-8 text-left">
             <EnquiryForm source="home_cta" testidPrefix="home-enquiry" />
           </div>

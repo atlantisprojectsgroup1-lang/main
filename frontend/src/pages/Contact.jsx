@@ -11,12 +11,12 @@ export default function Contact() {
     api.get("/company").then((r) => setCompany(r.data)).catch(() => {});
   }, []);
 
-  const phones = company?.phones || { primary: "+91 97083 97083", sales: "+91 96078 96078" };
+  const phones = company?.phones || { primary: "+91 9041795879", sales: "+91 9041795879" };
 
   return (
     <div data-testid="contact-page" className="pt-32 pb-24">
       <SEO title="Contact — Book a Private Site Visit" path="/contact"
-        description="Reach ATLANTIS — call +91 97083 97083 or request a private site visit. Corporate office: Uptown Insignia, Airport Road, Zirakpur." />
+        description="Reach ATLANTIS — call +91 9041795879 or request a private site visit. Corporate office: Sector 82A, Mohali, Punjab." />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <p className="eyebrow mb-3">Reach Us</p>
         <h1 className="font-serif text-4xl sm:text-5xl font-normal tracking-tight mb-14">Begin Your <span className="gold-text italic">Journey</span></h1>
@@ -41,6 +41,12 @@ export default function Contact() {
                   <h2 className="font-serif text-xl">{o.name}</h2>
                 </div>
                 <p className="text-slate-300 text-sm leading-relaxed">{o.address}, {o.city}</p>
+                {o.email && (
+                  <a href={`mailto:${o.email}`} data-testid={`contact-office-email-${i}`} className="block text-sm text-[#E6C687] hover:text-[#F3E5AB] mt-2 transition-colors">{o.email}</a>
+                )}
+                {company?.website && (
+                  <a href={company.website} target="_blank" rel="noopener noreferrer" data-testid={`contact-office-website-${i}`} className="block text-xs font-mono text-slate-500 hover:text-[#E6C687] mt-1.5 transition-colors">{company.website.replace("https://", "")}</a>
+                )}
               </div>
             ))}
 

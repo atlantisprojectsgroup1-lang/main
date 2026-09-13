@@ -62,7 +62,7 @@ export default function ChatWidget() {
     } catch (e) {
       setMessages((m) => {
         const copy = [...m];
-        copy[copy.length - 1] = { role: "assistant", content: "I'm momentarily unavailable — please call +91 97083 97083 or leave your number in the enquiry form." };
+        copy[copy.length - 1] = { role: "assistant", content: "I'm momentarily unavailable — please call +91 9041795879 or leave your number in the enquiry form." };
         return copy;
       });
     } finally {

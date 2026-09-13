@@ -9,6 +9,7 @@ const SECTIONS = [
   { title: "6. Taxes", body: "GST, TDS (where applicable) and other statutory taxes are payable by the buyer as per prevailing law and are not included unless expressly stated in the official cost sheet." },
   { title: "7. No Payment to Channel Partner", body: "Do not hand over any booking amount, instalment or fee to any individual, agent or channel partner in cash or personal accounts. QUALITY REAL ESTATE facilitates enquiries, site visits and documentation support only; it is not authorised to collect project payments." },
   { title: "8. Disputes", body: "Payment and refund disputes are governed by the agreement to sell and the RERA Act, 2016, subject to the jurisdiction of courts/fora at SAS Nagar (Mohali), Punjab." },
+  { title: "9. Contact", body: "ATLANTIS Group — Corporate Office: Sector 82A, Mohali, Punjab, India · Phone / WhatsApp: +91 9041795879 · Email: support@atlantisprojectsgroup.com · Web: atlantisprojectsgroup.com" },
 ];
 
 export default function PaymentRefundPolicy() {

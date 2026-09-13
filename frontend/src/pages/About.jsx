@@ -23,6 +23,8 @@ export default function About() {
   const teamGroups = {};
   team.forEach((m) => { (teamGroups[m.group || "General"] = teamGroups[m.group || "General"] || []).push(m); });
   const orderedGroups = Object.keys(teamGroups).sort((a, b) => (a === "Leadership" ? -1 : b === "Leadership" ? 1 : a.localeCompare(b)));
+  const office = company.offices?.[0];
+  const phone = company.phones?.primary || "+91 9041795879";
 
   return (
     <div data-testid="about-page" className="pt-32 pb-24">
@@ -167,6 +169,29 @@ export default function About() {
             </div>
           </section>
         )}
+
+        {/* CORPORATE OFFICE */}
+        <section data-testid="about-contact-strip" className="mt-24 glass-card p-8 lg:p-10">
+          <p className="eyebrow mb-6">Corporate Office</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-sm">
+            <div>
+              <p className="text-slate-500 font-mono text-[0.6rem] uppercase tracking-[0.2em] mb-2">Address</p>
+              <p className="text-slate-300 leading-relaxed">{office?.name || "Atlantis Corporate Office"}, {office?.address || "Sector 82A"}, {office?.city || "Mohali, Punjab, India"}</p>
+            </div>
+            <div>
+              <p className="text-slate-500 font-mono text-[0.6rem] uppercase tracking-[0.2em] mb-2">Call / WhatsApp</p>
+              <a href={`tel:${phone.replace(/\s/g, "")}`} data-testid="about-phone-link" className="text-[#E6C687] hover:text-[#F3E5AB] transition-colors">{phone}</a>
+            </div>
+            <div>
+              <p className="text-slate-500 font-mono text-[0.6rem] uppercase tracking-[0.2em] mb-2">Email</p>
+              <a href={`mailto:${office?.email || "support@atlantisprojectsgroup.com"}`} data-testid="about-email-link" className="text-[#E6C687] hover:text-[#F3E5AB] transition-colors break-all">{office?.email || "support@atlantisprojectsgroup.com"}</a>
+            </div>
+            <div>
+              <p className="text-slate-500 font-mono text-[0.6rem] uppercase tracking-[0.2em] mb-2">Website</p>
+              <a href={company.website || "https://atlantisprojectsgroup.com"} target="_blank" rel="noopener noreferrer" data-testid="about-website-link" className="text-[#E6C687] hover:text-[#F3E5AB] transition-colors">{(company.website || "https://atlantisprojectsgroup.com").replace("https://", "")}</a>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );

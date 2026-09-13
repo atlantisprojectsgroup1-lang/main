@@ -1,0 +1,14 @@
+{
+  "summary": "Frontend verification of mobile call dialer bug fix + global contact info sweep. 35/35 checks passed. Mobile viewport (390x844) shows header-call-btn-mobile (gold icon, tel:+919041795879) directly in top bar without opening hamburger. Hamburger menu also exposes mobile-header-call-btn with 'Call +91 90417 95879'. Desktop (1920) retains header-call-btn with icon + number, and the mobile-only button is hidden. Contact, Footer, About corporate strip, Terms/Payment/Booking policy pages, WhatsApp float (wa.me/919041795879), and brochure PDF endpoint all updated to new global contact (+91 90417 95879, support@atlantisprojectsgroup.com, Sector 82A Mohali, atlantisprojectsgroup.com). No occurrences of old numbers 97083/96078 on Contact page.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "100%"},
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Mobile call button bug is fixed and verified. Global phone number is +91 90417 95879 (tel:+919041795879), email support@atlantisprojectsgroup.com, address 'Sector 82A, Mohali'. Key data-testids: header-call-btn (desktop), header-call-btn-mobile (mobile top bar), mobile-header-call-btn (in hamburger menu), footer-email-link, contact-office-email-0, contact-office-website-0, about-contact-strip, about-phone-link, about-email-link, about-website-link. Enquiry popup close: [data-testid='enquiry-popup-close-btn'] ~1.8s after load."
+}

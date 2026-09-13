@@ -5,6 +5,7 @@ COMPANY = {
     "id": "company",
     "legal_name": "Atlantis Group",
     "brand_name": "ATLANTIS",
+    "website": "https://atlantisprojectsgroup.com",
     "tagline": "Building Tomorrow's Landmarks",
     "about_long": (
         "Atlantis Group is a pioneering real estate development firm with a vision to redefine luxury living. "
@@ -35,7 +36,7 @@ COMPANY = {
     "design_partners": ["Ar. Tripat", "Subah & Associates", "Oracle Landscape", "Designing Earth", "BARAQ", "RREN Consultants & Contractors", "Arete Design Studio", "AIMS", "Bobby Mukherrji Architects", "GPM Architects and Planners"],
     "awards": [],
     "offices": [
-        {"name": "Corporate Office — Zirakpur", "address": "Office No. 25, 3rd Floor, Uptown Insignia, Airport Road", "city": "Zirakpur, Punjab 140603", "phone": "+91 97083 97083", "email": "", "map_lat": None, "map_lng": None, "google_maps_url": ""},
+        {"name": "Atlantis Corporate Office", "address": "Atlantis Corporate Office, Sector 82A", "city": "Mohali, Punjab, India", "phone": "+91 9041795879", "email": "support@atlantisprojectsgroup.com", "map_lat": None, "map_lng": None, "google_maps_url": ""},
     ],
     "social_links": [
         {"name": "Instagram", "url": "https://www.instagram.com/atlantisgroup.in/"},
@@ -49,7 +50,7 @@ COMPANY = {
         "rera_note": "Every project registered with Punjab RERA",
         "delivery_promise": "On-time handover, transparent pricing, consortium-built quality",
     },
-    "phones": {"primary": "+91 97083 97083", "sales": "+91 96078 96078"},
+    "phones": {"primary": "+91 9041795879", "sales": "+91 9041795879"},
     "stats": {"total_projects": 6, "luxury_residences": 500, "prime_locations": 3, "design_partners": 6},
     "placeholders": ["social_links", "awards", "office email", "office geo-coordinates"],
 }
@@ -277,7 +278,7 @@ UPDATES = [
 FAQS = [
     {"id": "faq-1", "project_id": None, "question": "What types of homes does Atlantis Group offer in Zirakpur?", "answer": "Atlantis Group focuses on premium residential communities in Zirakpur, including luxury 3 BHK flats at Atlantis Grand and 2 & 3 BHK homes at Atlantis Heights. Each project page includes renders, location maps, downloads and floor plan information for easier comparison.", "sort_order": 1},
     {"id": "faq-2", "project_id": None, "question": "Which Atlantis project is near possession?", "answer": "Atlantis Grand (Possession 2026) and Atlantis Three Sixty (Possession March 2026) are the near-possession addresses. Review the project pages for layout previews, location details and availability.", "sort_order": 2},
-    {"id": "faq-3", "project_id": None, "question": "How can I book a site visit?", "answer": "Use the Enquire or Book Site Visit forms on any page, the WhatsApp button, or call +91 97083 97083. The relationship team will arrange a private appointment and help you compare Atlantis Grand, Atlantis Heights, Three Sixty and the delivered Atlantis at Wave.", "sort_order": 3},
+    {"id": "faq-3", "project_id": None, "question": "How can I book a site visit?", "answer": "Use the Enquire or Book Site Visit forms on any page, the WhatsApp button, or call +91 9041795879. The relationship team will arrange a private appointment and help you compare Atlantis Grand, Atlantis Heights, Three Sixty and the delivered Atlantis at Wave.", "sort_order": 3},
 ]
 
 BLOG = [
@@ -301,7 +302,7 @@ TEAM = [
 
 SETTINGS = {
     "id": "global",
-    "whatsapp_number": "919607896078",
+    "whatsapp_number": "919041795879",
     "whatsapp_default_message": "Hi, I'm interested in ATLANTIS projects. Please share details.",
     "meta_pixel_id": "", "ga4_id": "", "gtm_id": "",
     "whatsapp_cloud_api_token": "", "whatsapp_phone_number_id": "",

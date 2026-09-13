@@ -7,7 +7,7 @@ const SECTIONS = [
   { title: "4. Data Sharing", body: "Your information may be shared with ATLANTIS Group and its authorised channel partner QUALITY REAL ESTATE strictly for the purpose of servicing your enquiry. Data is never shared with unrelated third parties for marketing." },
   { title: "5. Cookies & Tracking", body: "This site may use cookies and tracking pixels (Google Analytics, Meta Pixel) to measure campaign performance and improve content. You can disable cookies in your browser settings without affecting core site functionality." },
   { title: "6. Data Security & Retention", body: "Lead data is stored securely with access restricted to authorised personnel. Enquiry data is retained only as long as necessary to service your request and meet legal obligations." },
-  { title: "7. Your Rights", body: "You may request access, correction or deletion of your personal data at any time by contacting us at +91 97083 97083 or through the contact form on this website." },
+  { title: "7. Your Rights", body: "You may request access, correction or deletion of your personal data at any time by contacting us at +91 9041795879, emailing support@atlantisprojectsgroup.com, or through the contact form on this website." },
   { title: "8. Channel Partner Disclosure", body: "This website is designed, published and managed by an authorised channel partner of ATLANTIS — QUALITY REAL ESTATE (https://qualityrealestate.in). Project information is sourced from official ATLANTIS communication; please verify all details, including RERA registration, independently before making a purchase decision." },
 ];
 

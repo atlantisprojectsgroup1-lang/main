@@ -11,6 +11,7 @@ const SECTIONS = [
   { title: "8. Privacy", body: "Use of this website is also governed by our Privacy Policy, which explains how enquiry data is collected and used in compliance with the DPDP Act, 2023." },
   { title: "9. Governing Law", body: "These terms are governed by the laws of India. Disputes are subject to the exclusive jurisdiction of courts at SAS Nagar (Mohali), Punjab." },
   { title: "10. Updates", body: "These Terms & Conditions may be updated periodically. Continued use of the website after changes constitutes acceptance of the revised terms." },
+  { title: "11. Contact", body: "ATLANTIS Group — Corporate Office: Sector 82A, Mohali, Punjab, India · Phone / WhatsApp: +91 9041795879 · Email: support@atlantisprojectsgroup.com · Web: atlantisprojectsgroup.com" },
 ];
 
 export default function TermsConditions() {

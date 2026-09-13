@@ -335,7 +335,7 @@ async def ai_chat(body: ChatIn):
             "You are the ATLANTIS AI Luxury Concierge for a premium real estate developer in Chandigarh Tricity. "
             "Answer questions about projects, pricing, availability, possession, location and amenities ONLY from the "
             "context below. If a fact is not in the context, say the team will confirm and invite the visitor to share "
-            "their name and phone number, or call +91 97083 97083. Be warm, concise, premium in tone. Never invent "
+            "their name and phone number, or call +91 9041795879. Be warm, concise, premium in tone. Never invent "
             "prices, RERA numbers or dates. When a visitor shows buying intent, politely ask for their name and phone "
             "number so the relationship team can reach out.\n\nCONTEXT:\n" + context +
             "\n\nRECENT CONVERSATION:\n" + history_text
@@ -353,7 +353,7 @@ async def ai_chat(body: ChatIn):
                     break
         except Exception as e:
             logger.warning(f"chat stream error: {e}")
-            yield f"data: {json.dumps({'token': 'I apologise — I am momentarily unavailable. Please call +91 97083 97083 or leave your number and we will call you back.'})}\n\n"
+            yield f"data: {json.dumps({'token': 'I apologise — I am momentarily unavailable. Please call +91 9041795879 or leave your number and we will call you back.'})}\n\n"
         await db.chat_messages.insert_one({"id": new_id(), "session_id": session_id, "role": "assistant",
                                            "content": "".join(full), "created_at": now_iso()})
         yield "data: [DONE]\n\n"
