@@ -71,7 +71,8 @@ export default function Coverflow({ items = [], autoSpeed = 2800, onSelect, test
           return (
             <div key={item.key ?? i} data-testid={`${testid}-slide-${i}`} className="coverflow-slide absolute w-[74%] sm:w-[48%] lg:w-[38%] h-full cursor-grab active:cursor-grabbing" style={style}
               onClick={() => { if (drag.current.moved) return; if (offset === 0 && onSelect) onSelect(item); else if (visible) setActive(i); }}>
-              <div className="relative w-full h-full overflow-hidden border border-[#C5A059]/30 shadow-[0_30px_60px_rgba(0,0,0,0.6)]">
+              <div className="relative w-full h-full overflow-hidden rounded-2xl shadow-[0_30px_60px_rgba(0,0,0,0.6)]"
+                style={{ border: "2px solid transparent", background: "linear-gradient(#0A1322, #0A1322) padding-box, linear-gradient(135deg, #C8102E 0%, #D4AF37 45%, #F3E5AB 60%, #C8102E 100%) border-box" }}>
                 <img src={item.image} alt={item.alt || item.title} className="w-full h-full object-cover" loading={abs > 1 ? "lazy" : "eager"} draggable={false} />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-transparent to-transparent" />
                 {abs === 0 && (
