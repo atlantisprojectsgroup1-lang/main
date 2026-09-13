@@ -216,6 +216,37 @@ export default function ProjectDetail() {
                 </div>
               ))}
             </div>
+            {project.configs?.length > 0 && (
+              <div id="inventory" className="mt-12 scroll-mt-32" data-testid="inventory-inline">
+                <p className="eyebrow mb-3">Inventory</p>
+                <h2 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight mb-6">Configurations & <span className="gold-text italic">Pricing</span></h2>
+                <div className="glass-card overflow-x-auto">
+                  <table className="w-full text-sm" data-testid="inventory-table">
+                    <thead>
+                      <tr className="border-b border-[#C5A059]/20 text-left">
+                        {["Configuration", "Area", "Price", "Availability"].map((h) => (
+                          <th key={h} className="px-4 py-3 text-[0.6rem] font-mono uppercase tracking-[0.18em] text-slate-400 font-medium">{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {project.configs.map((c, i) => (
+                        <tr key={i} data-testid={`inventory-row-${i}`} className="border-b border-slate-800/60 hover:bg-[#D4AF37]/5 transition-colors">
+                          <td className="px-4 py-3 font-serif text-base">{c.config}</td>
+                          <td className="px-4 py-3 text-slate-400 text-xs">{c.area || "—"}</td>
+                          <td className="px-4 py-3 gold-text font-serif text-base">{c.price_label}</td>
+                          <td className="px-4 py-3">
+                            <span className={`text-[0.58rem] font-mono uppercase tracking-[0.16em] px-2 py-0.5 border ${c.availability === "AVAILABLE" ? "border-emerald-500/40 text-emerald-400" : c.availability === "FEW_LEFT" ? "border-amber-500/40 text-amber-400" : "border-slate-600 text-slate-500"}`}>
+                              {(c.availability || "").replace("_", " ") || "—"}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
             {project.placeholders?.length > 0 && (
               <p className="mt-8 text-[0.62rem] font-mono text-slate-600 tracking-wider">
                 Details being updated by the developer: {project.placeholders.join(", ")}
@@ -262,41 +293,6 @@ export default function ProjectDetail() {
         project.rera_number ? `RERA ${project.rera_number}` : "RERA Registered",
         `${project.locality}${project.locality && project.city ? ", " : ""}${project.city}`,
       ].filter(Boolean)} />
-
-      {/* Inventory / Price */}
-      {project.configs?.length > 0 && (
-        <section id="inventory" className="py-16 lg:py-24 bg-[#0A1322]/50 scroll-mt-32">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <p className="eyebrow mb-3">Inventory</p>
-            <h2 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight mb-10">Configurations & <span className="gold-text italic">Pricing</span></h2>
-            <div className="glass-card overflow-x-auto">
-              <table className="w-full text-sm" data-testid="inventory-table">
-                <thead>
-                  <tr className="border-b border-[#C5A059]/20 text-left">
-                    {["Configuration", "Area", "Price", "Availability"].map((h) => (
-                      <th key={h} className="px-6 py-4 text-[0.62rem] font-mono uppercase tracking-[0.2em] text-slate-400 font-medium">{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {project.configs.map((c, i) => (
-                    <tr key={i} data-testid={`inventory-row-${i}`} className="border-b border-slate-800/60 hover:bg-[#D4AF37]/5 transition-colors">
-                      <td className="px-6 py-4 font-serif text-lg">{c.config}</td>
-                      <td className="px-6 py-4 text-slate-400">{c.area || "—"}</td>
-                      <td className="px-6 py-4 gold-text font-serif text-lg">{c.price_label}</td>
-                      <td className="px-6 py-4">
-                        <span className={`text-[0.6rem] font-mono uppercase tracking-[0.18em] px-2.5 py-1 border ${c.availability === "AVAILABLE" ? "border-emerald-500/40 text-emerald-400" : c.availability === "FEW_LEFT" ? "border-amber-500/40 text-amber-400" : "border-slate-600 text-slate-500"}`}>
-                          {(c.availability || "").replace("_", " ") || "—"}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Downloads */}
       {project.documents?.length > 0 && (
