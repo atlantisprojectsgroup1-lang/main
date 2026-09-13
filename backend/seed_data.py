@@ -115,6 +115,17 @@ PROJECTS = [
             {"name": "NH-44 Expressway", "distance": "5 min", "type": "highway"},
             {"name": "Schools, Hospitals & Commercial Hubs", "distance": "Close by", "type": "convenience"},
         ],
+        "zones": [
+            {"key": "residential", "label": "Residential Zone", "configs": [
+                {"config": "3 BHK", "area": "", "price_label": "On Request", "availability": "AVAILABLE"},
+                {"config": "3+1 BHK", "area": "", "price_label": "On Request", "availability": "AVAILABLE"},
+                {"config": "4+1 BHK", "area": "", "price_label": "On Request", "availability": "FEW_LEFT"},
+                {"config": "Penthouse", "area": "up to 5,320 sq.ft", "price_label": "On Request", "availability": "FEW_LEFT"},
+            ]},
+            {"key": "commercial", "label": "Commercial Zone", "configs": [
+                {"config": "Showroom / Retail Unit (Basement-01)", "area": "805 – 1,686 sq.ft", "price_label": "On Request", "availability": "AVAILABLE"},
+            ]},
+        ],
         "featured": True, "is_hot_selling": True, "sort_order": 1,
         "source": "atlantisprojects.in",
         "placeholders": ["total_area", "floors", "pricing", "gallery", "specifications", "rera_qr_image"],

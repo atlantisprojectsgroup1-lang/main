@@ -9,7 +9,7 @@ const EMPTY = {
   city: "", locality: "", address: "", rera_number: "", possession: "", price_label: "Price on Request",
   price_from: "", total_towers: "", total_area: "", floors: "", featured: false, is_hot_selling: false,
   sort_order: 10, project_type: [], images: [], configs: [], amenities: [], specifications: [], landmarks: [],
-  videos: [], documents: [],
+  videos: [], documents: [], zones: [],
   seo: { title: "", description: "", keywords: "" }, placeholders: [], logo: "",
 };
 
@@ -65,7 +65,15 @@ export default function AdminProjects() {
         .map((l) => { const [url, title] = l.split("|").map((s) => s?.trim()); return { url, title: title || "Project Video" }; });
       p.documents = (typeof p.documents_text === "string" ? p.documents_text : "").split("\n").map((l) => l.trim()).filter(Boolean)
         .map((l) => { const [name, url] = l.split("|").map((s) => s?.trim()); return { name: name || "Document", url }; });
-      delete p.images_text; delete p.configs_text; delete p.amenities_text; delete p.videos_text; delete p.documents_text;
+      const zmap = {};
+      (typeof p.zones_text === "string" ? p.zones_text : "").split("\n").map((l) => l.trim()).filter(Boolean)
+        .forEach((l) => {
+          const [zoneName, config, price, area] = l.split("|").map((s) => s?.trim());
+          if (!zoneName || !config) return;
+          (zmap[zoneName] = zmap[zoneName] || []).push({ config, price_label: price || "On Request", area: area || "", availability: "AVAILABLE" });
+        });
+      p.zones = Object.entries(zmap).map(([label, configs], i) => ({ key: label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || `zone-${i}`, label, configs }));
+      delete p.images_text; delete p.configs_text; delete p.amenities_text; delete p.videos_text; delete p.documents_text; delete p.zones_text;
       if (projects.some((x) => x.id === p.id)) {
         await api.put(`/admin/projects/${p.id}`, p);
       } else {
@@ -92,7 +100,7 @@ export default function AdminProjects() {
     <div data-testid="admin-projects-page">
       <div className="flex items-center justify-between mb-8">
         <h1 className="font-serif text-3xl">Projects CMS</h1>
-        <button data-testid="admin-add-project-btn" onClick={() => setEditing({ ...EMPTY, images_text: "", configs_text: "", amenities_text: "", videos_text: "", documents_text: "" })} className="gold-btn">
+        <button data-testid="admin-add-project-btn" onClick={() => setEditing({ ...EMPTY, images_text: "", configs_text: "", amenities_text: "", videos_text: "", documents_text: "", zones_text: "" })} className="gold-btn">
           <Plus size={14} /> New Project
         </button>
       </div>
@@ -117,7 +125,7 @@ export default function AdminProjects() {
                 <td className="px-5 py-3.5">{p.featured ? <span className="text-[#D4AF37]">●</span> : <span className="text-slate-600">○</span>}</td>
                 <td className="px-5 py-3.5">
                   <div className="flex gap-2">
-                    <button data-testid={`admin-edit-project-${p.slug}`} onClick={() => setEditing({ ...p, images_text: toText(p.images), configs_text: (p.configs || []).map((c) => [c.config, c.price_label, c.area].join(" | ")).join("\n"), amenities_text: (p.amenities || []).map((a) => [a.name, a.group].join(" | ")).join("\n"), videos_text: (p.videos || []).map((v) => [v.url, v.title].filter(Boolean).join(" | ")).join("\n"), documents_text: (p.documents || []).map((d) => [d.name, d.url].join(" | ")).join("\n") })}
+                    <button data-testid={`admin-edit-project-${p.slug}`} onClick={() => setEditing({ ...p, images_text: toText(p.images), configs_text: (p.configs || []).map((c) => [c.config, c.price_label, c.area].join(" | ")).join("\n"), amenities_text: (p.amenities || []).map((a) => [a.name, a.group].join(" | ")).join("\n"), videos_text: (p.videos || []).map((v) => [v.url, v.title].filter(Boolean).join(" | ")).join("\n"), documents_text: (p.documents || []).map((d) => [d.name, d.url].join(" | ")).join("\n"), zones_text: (p.zones || []).flatMap((z) => (z.configs || []).map((c) => [z.label, c.config, c.price_label, c.area].join(" | "))).join("\n") })}
                       className="p-2 border border-slate-700 text-slate-300 hover:border-[#D4AF37] hover:text-[#E6C687] transition-colors"><Pencil size={13} /></button>
                     <button data-testid={`admin-delete-project-${p.slug}`} onClick={() => remove(p.id)}
                       className="p-2 border border-slate-700 text-slate-300 hover:border-red-500 hover:text-red-400 transition-colors"><Trash2 size={13} /></button>
@@ -187,6 +195,11 @@ export default function AdminProjects() {
               <div className="sm:col-span-2">
                 <label className="text-[0.62rem] font-mono uppercase tracking-[0.2em] text-slate-400 block mb-2">Amenities — one per line: Name | Group</label>
                 <textarea data-testid="editor-amenities-input" rows={3} placeholder={"Clubhouse | Lifestyle"} value={editing.amenities_text ?? ""} onChange={(e) => setEditing({ ...editing, amenities_text: e.target.value })} className="w-full px-4 py-3 text-xs font-mono" />
+              </div>
+              <div className="sm:col-span-2">
+                <label className="text-[0.62rem] font-mono uppercase tracking-[0.2em] text-slate-400 block mb-2">Zones (optional) — publish Residential & Commercial in the same project. One per line: Zone Label | Config | Price | Area</label>
+                <textarea data-testid="editor-zones-input" rows={3} placeholder={"Residential Zone | 3 BHK | On Request | 1,850 sq.ft\nCommercial Zone | Showroom | On Request | 1,200 sq.ft"} value={editing.zones_text ?? ""} onChange={(e) => setEditing({ ...editing, zones_text: e.target.value })} className="w-full px-4 py-3 text-xs font-mono" />
+                <p className="text-[0.6rem] text-slate-600 mt-1.5 font-mono">When zones exist, the project page shows zone tabs (e.g. Residential Zone / Commercial Zone) above the inventory table.</p>
               </div>
               <div className="sm:col-span-2">
                 <label className="text-[0.62rem] font-mono uppercase tracking-[0.2em] text-slate-400 block mb-2">Videos — one per line: YouTube or MP4 URL | Title</label>

@@ -63,6 +63,7 @@ export default function ProjectDetail() {
   const [company, setCompany] = useState(null);
   const [lightbox, setLightbox] = useState(null);
   const [videoPlayer, setVideoPlayer] = useState(null);
+  const [zone, setZone] = useState(0);
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
@@ -216,10 +217,20 @@ export default function ProjectDetail() {
                 </div>
               ))}
             </div>
-            {project.configs?.length > 0 && (
+            {(project.configs?.length > 0 || project.zones?.length > 0) && (
               <div id="inventory" className="mt-12 scroll-mt-32" data-testid="inventory-inline">
                 <p className="eyebrow mb-3">Inventory</p>
                 <h2 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight mb-6">Configurations & <span className="gold-text italic">Pricing</span></h2>
+                {project.zones?.length > 0 && (
+                  <div className="flex gap-2 mb-5 flex-wrap" data-testid="zone-tabs">
+                    {project.zones.map((z, zi) => (
+                      <button key={z.key || zi} data-testid={`zone-tab-${z.key || zi}`} onClick={() => setZone(zi)}
+                        className={`text-[0.62rem] font-mono uppercase tracking-[0.18em] px-4 py-2 border transition-all ${zone === zi ? "border-[#D4AF37] text-[#F3E5AB] bg-[#D4AF37]/10" : "border-slate-700 text-slate-400 hover:border-[#C5A059]/50"}`}>
+                        {z.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
                 <div className="glass-card overflow-x-auto">
                   <table className="w-full text-sm" data-testid="inventory-table">
                     <thead>
@@ -230,7 +241,7 @@ export default function ProjectDetail() {
                       </tr>
                     </thead>
                     <tbody>
-                      {project.configs.map((c, i) => (
+                      {(project.zones?.length > 0 ? project.zones[zone]?.configs || [] : project.configs || []).map((c, i) => (
                         <tr key={i} data-testid={`inventory-row-${i}`} className="border-b border-slate-800/60 hover:bg-[#D4AF37]/5 transition-colors">
                           <td className="px-4 py-3 font-serif text-base">{c.config}</td>
                           <td className="px-4 py-3 text-slate-400 text-xs">{c.area || "—"}</td>
