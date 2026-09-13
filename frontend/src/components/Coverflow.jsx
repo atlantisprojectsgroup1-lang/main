@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 
 /**
  * 3D Coverflow showcase — auto-scroll, pause on hover, drag/swipe,
@@ -73,8 +73,19 @@ export default function Coverflow({ items = [], autoSpeed = 2800, onSelect, test
               onClick={() => { if (drag.current.moved) return; if (offset === 0 && onSelect) onSelect(item); else if (visible) setActive(i); }}>
               <div className="relative w-full h-full overflow-hidden rounded-2xl shadow-[0_30px_60px_rgba(0,0,0,0.6)]"
                 style={{ border: "2px solid transparent", background: "linear-gradient(#0A1322, #0A1322) padding-box, linear-gradient(135deg, #C8102E 0%, #D4AF37 45%, #F3E5AB 60%, #C8102E 100%) border-box" }}>
-                <img src={item.image} alt={item.alt || item.title} className="w-full h-full object-cover" loading={abs > 1 ? "lazy" : "eager"} draggable={false} />
+                {item.video && !item.image ? (
+                  <video src={item.video.url} muted preload="metadata" className="w-full h-full object-cover" />
+                ) : (
+                  <img src={item.image} alt={item.alt || item.title} className="w-full h-full object-cover" loading={abs > 1 ? "lazy" : "eager"} draggable={false} />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-transparent to-transparent" />
+                {item.video && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="w-14 h-14 rounded-full glass-card border-[#D4AF37]/60 flex items-center justify-center">
+                      <Play size={20} className="text-[#F3E5AB] ml-0.5" fill="currentColor" />
+                    </span>
+                  </div>
+                )}
                 {abs === 0 && (
                   <div className="absolute bottom-0 left-0 right-0 p-6 glass-card border-0 border-t border-[#C5A059]/30">
                     {item.logo && <img src={item.logo} alt={`${item.title} logo`} className="h-9 w-9 object-contain mb-2.5" />}

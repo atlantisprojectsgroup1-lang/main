@@ -35,7 +35,7 @@ export default function Footer({ company }) {
             <Link to="/projects" data-testid="footer-link-projects" className="hover:text-[#E6C687] transition-colors">Projects</Link>
             <Link to="/portfolio" data-testid="footer-link-portfolio" className="hover:text-[#E6C687] transition-colors">Delivered Portfolio</Link>
             <Link to="/about" data-testid="footer-link-about" className="hover:text-[#E6C687] transition-colors">About Us</Link>
-            <Link to="/blog" data-testid="footer-link-blog" className="hover:text-[#E6C687] transition-colors">Insights</Link>
+            <Link to="/blog" data-testid="footer-link-blog" className="hover:text-[#E6C687] transition-colors">Blogs & Updates</Link>
           </div>
         </div>
         <div>

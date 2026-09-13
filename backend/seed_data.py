@@ -258,6 +258,11 @@ PROJECTS = [
     },
 ]
 
+UPDATES = [
+    {"id": "update-1", "kind": "update", "title": "Atlantis Heights — Construction Started", "slug": "atlantis-heights-construction-started", "excerpt": "Construction has officially begun at Atlantis Heights, Zirakpur — forest-facing 2 & 3 BHK homes with the city's first elevated sky walk.", "body": "", "cover": "https://atlantisgroup.in/assets/images/heights/renders/heights-hero.webp", "author": "Atlantis Group", "tags": ["Construction Update"], "platform": "Website", "external_url": "/projects/atlantis-heights", "published_at": "2026-06-10"},
+    {"id": "update-2", "kind": "update", "title": "Atlantis at Wave — Sold Out", "slug": "atlantis-at-wave-sold-out", "excerpt": "Atlantis at Wave is fully sold out. Delivered July 2021 — thank you to every family who trusted us.", "body": "", "cover": "https://atlantisgroup.in/assets/images/wave/renders/atlantis-at-wave.webp", "author": "Atlantis Group", "tags": ["Milestone"], "platform": "Website", "external_url": "/projects/atlantis-at-wave", "published_at": "2026-05-01"},
+]
+
 FAQS = [
     {"id": "faq-1", "project_id": None, "question": "What types of homes does Atlantis Group offer in Zirakpur?", "answer": "Atlantis Group focuses on premium residential communities in Zirakpur, including luxury 3 BHK flats at Atlantis Grand and 2 & 3 BHK homes at Atlantis Heights. Each project page includes renders, location maps, downloads and floor plan information for easier comparison.", "sort_order": 1},
     {"id": "faq-2", "project_id": None, "question": "Which Atlantis project is near possession?", "answer": "Atlantis Grand (Possession 2026) and Atlantis Three Sixty (Possession March 2026) are the near-possession addresses. Review the project pages for layout previews, location details and availability.", "sort_order": 2},

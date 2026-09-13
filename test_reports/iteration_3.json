@@ -1,0 +1,30 @@
+{
+  "summary": "Iteration 3 verifies (a) BUG FIX: single-image project 3D Showcase now visible — /projects/atlantis-three-sixty and /projects/the-marq-by-atlantis both render project-3d-showcase Coverflow section right below the sticky subnav. (b) SECTION REORDER: /projects/atlantis-grand DOM order confirmed by measured scroll-Y: showcase(2765) < gallery(3486) < overview(4042) < inventory(5106) < amenities(5644) < location(7636) < faqs(8236) < enquire(8803). Videos/downloads/specifications sections absent on grand because it has no such data — that is expected. Sticky subnav order = [SHOWCASE, GALLERY, VIDEOS, OVERVIEW, DOWNLOADS, AMENITIES, SPECIFICATIONS, LOCATION, ENQUIRE]. Overview/inventory-table/amenities/faqs all still render. (c) MAP: home locations-map-section renders 36 Esri dark tiles + 6 gold-red divIcon pins, no attribution watermark issue; clicking a pin opens leaflet-popup with project name + View Project link -> /projects/atlantis-heights navigates correctly. (d) BLOGS & DAILY UPDATES: home tabs updates-tab-all/blog/update all present; Daily Updates tab shows 2 update-teaser cards ('Atlantis Heights — Construction Started' -> /projects/atlantis-heights, 'Atlantis at Wave — Sold Out' -> /projects/atlantis-at-wave); Blogs tab shows 3 blog-teaser cards. /blog page All tab lists 8 items (6 blogs + 2 updates), with same 3 tabs. (e) ADMIN CRUD (/admin/content, atlantisprojectsgroup@gmail.com / Atlantis@2026): initial 8 rows -> created Daily Update (kind=update, platform=Instagram, external URL https://instagram.com/example, title 'TEST update by SDET') -> 9 rows in admin, 3 update-teasers on home (new one first) -> deleted -> back to 8 rows, 2 update-teasers on home. Cleanup complete. (f) LAT/LNG EDITOR: editor-lat-input/editor-lng-input exist; changed atlantis-grand lat 30.659 -> 30.6595 (verified via /api/projects/atlantis-grand), then reverted to 30.6590 (verified). Save button testid is admin-save-project-btn (NOT editor-save-btn). (g) IMG-FRAME red-gold outline present: home 12, /projects 6, /about 7, /blog 5, project-detail grand 3 gallery thumbs — verified in screenshots. (h) Backend regression: pytest 35/35 pass (JUnit xml at /app/test_reports/pytest/iteration_3.xml).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "ProjectDetail sticky subnav", "issues": ["Static subnav renders anchor links for sections that may not exist on some projects (e.g. Videos/Downloads/Specifications on /projects/atlantis-grand which has none). Clicking those links scrolls to nothing. Minor UX nit — consider filtering subnav by presence of section."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/backend_test.py", "/app/test_reports/pytest/iteration_3.xml"],
+  "action_items": [
+    "(Low) Filter subnav items to only sections that have data (avoid dead #videos/#downloads/#specs anchors when project lacks that data).",
+    "(Low, prior iter) list_projects search + max_budget still overwrites q['$or'] — latent.",
+    "(Low, prior iter) <span> child of <option> hydration warning still visible."
+  ],
+  "critical_code_review_comments": [
+    "ProjectDetail.jsx L156: coverItems.length > 0 guard now correctly renders showcase for any project with >=1 image/video — bug fix verified.",
+    "ProjectDetail.jsx subnav array is hardcoded — could be derived from a conditional list keyed off (gallery.length, project.videos?.length, project.documents?.length, amenityGroups keys, specs, faqs).",
+    "AdminContent.jsx save/delete flow works end-to-end; note EMPTY_POST default platform not shown but Instagram select persists after selection — good.",
+    "ProjectMap.jsx: 6 pins render on Esri dark tiles; popup link uses react-router <Link> — verified navigation."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100% (35/35)", "frontend": "100% (all 8 requested flows verified E2E incl. cleanup and lat/lng revert)"},
+  "test_credentials": "admin: atlantisprojectsgroup@gmail.com / Atlantis@2026 (verified)",
+  "seed_data_creation": "Created 1 temp update (slug: test-update-by-sdet, platform Instagram) and DELETED it — home + admin both back to original state; lat 30.659 restored.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All showcase/gallery/videos/map/blogs+updates/admin-content-CRUD/lat-lng flows verified. Subnav is static — flag if you want dynamic subnav. The correct save-project testid is admin-save-project-btn (not editor-save-btn). Coverflow slide testid for center slot is coverflow-slide-center. Update teasers use data-testid=update-teaser-{slug} and blog teasers blog-teaser-{slug}. Home updates tabs testids: updates-tab-all|blog|update. Admin content page testids: admin-content-row-{slug}, admin-add-post-btn, admin-edit-post-{slug}, admin-delete-post-{slug}, post-kind-select, post-platform-select, post-external-url-input, post-title-input, post-excerpt-input, post-save-btn."
+}

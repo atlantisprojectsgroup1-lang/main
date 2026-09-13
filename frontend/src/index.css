@@ -84,6 +84,13 @@ body {
 }
 .gold-btn:hover { box-shadow: 0 0 32px rgba(212, 175, 55, 0.5); transform: translateY(-1px); }
 
+.img-frame {
+    border: 2px solid transparent;
+    border-radius: 1rem;
+    background: linear-gradient(#0A1322, #0A1322) padding-box, linear-gradient(135deg, #C8102E 0%, #D4AF37 45%, #F3E5AB 60%, #C8102E 100%) border-box;
+    overflow: hidden;
+}
+
 .outline-btn {
     border: 1px solid rgba(212, 175, 55, 0.6);
     color: #E6C687;
@@ -175,3 +182,17 @@ select option { background-color: #101B2E; color: #F8FAFC; }
 .animate-pulse-gold { animation: pulse-gold 2.4s ease-out infinite; }
 
 [data-debug-wrapper="true"] { display: contents !important; }
+
+.leaflet-popup-content-wrapper {
+    background: #0A1322;
+    color: #F8FAFC;
+    border: 1px solid rgba(197, 160, 89, 0.35);
+    border-radius: 10px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+}
+.leaflet-popup-tip { background: #0A1322; border: 1px solid rgba(197, 160, 89, 0.35); }
+.leaflet-popup-content { margin: 12px 14px; font-family: 'Plus Jakarta Sans', sans-serif; }
+.leaflet-container a.leaflet-popup-close-button { color: #94A3B8; }
+.leaflet-control-attribution { background: rgba(5, 11, 20, 0.7) !important; color: #475569 !important; font-size: 9px !important; }
+.leaflet-control-attribution a { color: #64748B !important; }
+.leaflet-control-zoom a { background: #101B2E !important; color: #E6C687 !important; border-color: rgba(197, 160, 89, 0.3) !important; }

@@ -6,6 +6,7 @@ import api from "../lib/api";
 import SEO from "../components/SEO";
 import Coverflow from "../components/Coverflow";
 import ProjectCard from "../components/ProjectCard";
+import ProjectMap from "../components/ProjectMap";
 import EnquiryForm from "../components/EnquiryForm";
 
 const HERO_BG = "https://atlantisgroup.in/assets/images/grand/renders/grand-arrival-night.webp";
@@ -37,13 +38,14 @@ export default function Home() {
   const [projects, setProjects] = useState([]);
   const [company, setCompany] = useState(null);
   const [blog, setBlog] = useState([]);
+  const [btab, setBtab] = useState("ALL");
   const [tab, setTab] = useState("ALL");
   const navigate = useNavigate();
 
   useEffect(() => {
     api.get("/projects").then((r) => setProjects(r.data)).catch(() => {});
     api.get("/company").then((r) => setCompany(r.data)).catch(() => {});
-    api.get("/blog").then((r) => setBlog(r.data.slice(0, 3))).catch(() => {});
+    api.get("/blog").then((r) => setBlog(r.data)).catch(() => {});
   }, []);
 
   const filtered = tab === "ALL" ? projects : projects.filter((p) => p.status === tab);
@@ -138,7 +140,7 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 flex items-end justify-between">
             <div>
               <p className="eyebrow mb-3">The Portfolio</p>
-              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal tracking-tight">Three Addresses. <span className="gold-text italic">One Standard.</span></h2>
+              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal tracking-tight">Multiple Addresses. <span className="gold-text italic">One Standard "Quality"</span></h2>
             </div>
             <Link to="/projects" data-testid="showcase-view-all-link" className="hidden sm:flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-[#E6C687] hover:gap-3 transition-all">
               View All <ArrowUpRight size={14} />
@@ -208,7 +210,7 @@ export default function Home() {
             ].map((c) => (
               <Link key={c.title} to={c.q ? `/projects?category=${c.q}` : "/projects"} data-testid={c.testid}
                 className="group glass-card overflow-hidden hover:border-[#D4AF37]/50 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(212,175,55,0.12)] transition-all duration-500">
-                <div className="relative h-44 overflow-hidden">
+                <div className="relative h-44 img-frame">
                   <img src={c.img} alt={`${c.title} — ATLANTIS`} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#101B2E] via-[#050B14]/30 to-transparent" />
                   <span className="absolute bottom-4 left-6 w-11 h-11 glass-card border-[#D4AF37]/50 flex items-center justify-center">
@@ -279,30 +281,63 @@ export default function Home() {
         </section>
       )}
 
-      {/* BLOG TEASERS */}
+      {/* BLOGS & DAILY UPDATES */}
       {blog.length > 0 && (
-        <section className="py-20 lg:py-28 bg-[#0A1322]/50">
+        <section data-testid="home-updates-section" className="py-20 lg:py-28 bg-[#0A1322]/50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-end justify-between mb-12">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
               <div>
-                <p className="eyebrow mb-3">Insights</p>
-                <h2 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight">The Atlantis <span className="gold-text italic">Perspective</span></h2>
+                <p className="eyebrow mb-3">Stay Updated</p>
+                <h2 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight">Blogs & <span className="gold-text italic">Daily Updates</span></h2>
               </div>
-              <Link to="/blog" data-testid="blog-view-all-link" className="hidden sm:flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-[#E6C687]">All Stories <ArrowUpRight size={14} /></Link>
+              <div className="flex items-center gap-2 flex-wrap" data-testid="updates-tabs">
+                {[["ALL", "All"], ["blog", "Blogs"], ["update", "Daily Updates"]].map(([k, label]) => (
+                  <button key={k} data-testid={`updates-tab-${k.toLowerCase()}`} onClick={() => setBtab(k)}
+                    className={`text-[0.62rem] font-mono uppercase tracking-[0.18em] px-3.5 py-2 border transition-all ${btab === k ? "border-[#D4AF37] text-[#F3E5AB] bg-[#D4AF37]/10" : "border-slate-700 text-slate-400"}`}>
+                    {label}
+                  </button>
+                ))}
+                <Link to="/blog" data-testid="blog-view-all-link" className="hidden sm:flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-[#E6C687] ml-2">All Stories <ArrowUpRight size={14} /></Link>
+              </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {blog.map((b, i) => (
-                <Link key={b.id} to={`/blog/${b.slug}`} data-testid={`blog-teaser-${b.slug}`} className="group glass-card p-7 hover:border-[#D4AF37]/50 hover:-translate-y-1.5 transition-all duration-500">
-                  <p className="text-[0.6rem] font-mono text-slate-500 tracking-widest uppercase mb-4">{b.published_at} · {(b.tags || []).join(" / ")}</p>
-                  <h3 className="font-serif text-xl leading-snug group-hover:text-[#F3E5AB] transition-colors">{b.title}</h3>
-                  <p className="text-sm text-slate-400 mt-3 leading-relaxed line-clamp-3">{b.excerpt}</p>
-                  <span className="flex items-center gap-1 text-[0.65rem] font-mono uppercase tracking-[0.2em] text-[#E6C687] mt-5">Read <ArrowUpRight size={13} /></span>
-                </Link>
-              ))}
+              {(btab === "ALL" ? blog : blog.filter((b) => (b.kind || "blog") === btab)).slice(0, 3).map((b) => {
+                const isUpdate = b.kind === "update";
+                const external = isUpdate && b.external_url?.startsWith("http");
+                const meta = `${b.published_at}${isUpdate ? ` · ${(b.platform || "UPDATE").toUpperCase()}` : ` · ${(b.tags || []).join(" / ")}`}`;
+                const inner = (
+                  <>
+                    <p className="text-[0.6rem] font-mono text-slate-500 tracking-widest uppercase mb-4">{meta}</p>
+                    <h3 className="font-serif text-xl leading-snug group-hover:text-[#F3E5AB] transition-colors">{b.title}</h3>
+                    <p className="text-sm text-slate-400 mt-3 leading-relaxed line-clamp-3">{b.excerpt}</p>
+                    <span className="flex items-center gap-1 text-[0.65rem] font-mono uppercase tracking-[0.2em] text-[#E6C687] mt-5">
+                      {isUpdate ? (external ? "View Post" : "View Update") : "Read"} <ArrowUpRight size={13} />
+                    </span>
+                  </>
+                );
+                const cls = "group glass-card p-7 hover:border-[#D4AF37]/50 hover:-translate-y-1.5 transition-all duration-500 block";
+                return external ? (
+                  <a key={b.id} href={b.external_url} target="_blank" rel="noopener noreferrer" data-testid={`update-teaser-${b.slug}`} className={cls}>{inner}</a>
+                ) : (
+                  <Link key={b.id} to={isUpdate && b.external_url ? b.external_url : `/blog/${b.slug}`} data-testid={`${isUpdate ? "update" : "blog"}-teaser-${b.slug}`} className={cls}>{inner}</Link>
+                );
+              })}
             </div>
           </div>
         </section>
       )}
+
+      {/* LOCATIONS MAP */}
+      <section data-testid="locations-map-section" className="py-20 lg:py-28">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="eyebrow mb-3">Where We Build</p>
+          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal tracking-tight mb-4">Pinned on the <span className="gold-text italic">Map</span></h2>
+          <p className="text-slate-400 font-light mb-10 max-w-2xl">Every ATLANTIS address across the Tricity — tap a pin to explore the project.</p>
+          <div className="img-frame h-[440px] relative z-0">
+            <ProjectMap projects={projects} />
+          </div>
+        </div>
+      </section>
 
       {/* ENQUIRY CTA */}
       <section className="py-20 lg:py-28 relative overflow-hidden">

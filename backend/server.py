@@ -20,7 +20,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, Field
 from typing import Optional, List
 
-from seed_data import COMPANY, PROJECTS, FAQS, BLOG, TESTIMONIALS, SETTINGS, TEAM
+from seed_data import COMPANY, PROJECTS, FAQS, BLOG, TESTIMONIALS, SETTINGS, TEAM, UPDATES
 
 mongo_url = os.environ["MONGO_URL"]
 client = AsyncIOMotorClient(mongo_url)
@@ -669,7 +669,7 @@ async def startup():
     if await db.faqs.count_documents({}) == 0:
         await db.faqs.insert_many([dict(f) for f in FAQS])
     if await db.blog.count_documents({}) == 0:
-        await db.blog.insert_many([dict(b) for b in BLOG])
+        await db.blog.insert_many([{**b, "kind": b.get("kind", "blog")} for b in BLOG] + [dict(u) for u in UPDATES])
     if await db.testimonials.count_documents({}) == 0 and TESTIMONIALS:
         await db.testimonials.insert_many([dict(t) for t in TESTIMONIALS])
     if await db.team.count_documents({}) == 0:

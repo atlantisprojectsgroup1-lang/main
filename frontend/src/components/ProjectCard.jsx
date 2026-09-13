@@ -13,7 +13,7 @@ export default function ProjectCard({ project, index = 0 }) {
   return (
     <Link to={`/projects/${project.slug}`} data-testid={`project-card-${project.slug}`}
       className="group block glass-card overflow-hidden hover:border-[#D4AF37]/50 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(212,175,55,0.15)] transition-all duration-500">
-      <div className="relative h-64 overflow-hidden">
+      <div className="relative h-64 img-frame">
         {cover ? (
           <img src={cover} alt={project.images[0].alt || project.name} loading={index > 2 ? "lazy" : "eager"}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />

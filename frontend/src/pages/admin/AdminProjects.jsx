@@ -52,6 +52,8 @@ export default function AdminProjects() {
       p.total_towers = p.total_towers ? Number(p.total_towers) : null;
       p.floors = p.floors ? Number(p.floors) : null;
       p.sort_order = Number(p.sort_order) || 10;
+      p.lat = p.lat ? Number(p.lat) : null;
+      p.lng = p.lng ? Number(p.lng) : null;
       p.project_type = typeof p.project_type === "string" ? p.project_type.split(",").map((s) => s.trim()).filter(Boolean) : p.project_type;
       p.images = (typeof p.images_text === "string" ? p.images_text : toText(p.images)).split("\n").map((u) => u.trim()).filter(Boolean)
         .map((u) => ({ url: u, alt: `${p.name} — ${p.locality || p.city}`, category: "EXTERIOR" }));
@@ -165,6 +167,8 @@ export default function AdminProjects() {
               <input data-testid="editor-address-input" placeholder="Full address" value={editing.address} onChange={(e) => setEditing({ ...editing, address: e.target.value })} className="px-4 py-3 text-sm sm:col-span-2" />
               <input data-testid="editor-rera-input" placeholder="RERA number" value={editing.rera_number} onChange={(e) => setEditing({ ...editing, rera_number: e.target.value })} className="px-4 py-3 text-sm" />
               <input data-testid="editor-possession-input" placeholder="Possession (e.g. March 2026)" value={editing.possession} onChange={(e) => setEditing({ ...editing, possession: e.target.value })} className="px-4 py-3 text-sm" />
+              <input data-testid="editor-lat-input" placeholder="Map latitude (e.g. 30.6590)" value={editing.lat ?? ""} onChange={(e) => setEditing({ ...editing, lat: e.target.value })} className="px-4 py-3 text-sm" />
+              <input data-testid="editor-lng-input" placeholder="Map longitude (e.g. 76.8350)" value={editing.lng ?? ""} onChange={(e) => setEditing({ ...editing, lng: e.target.value })} className="px-4 py-3 text-sm" />
               <input data-testid="editor-price-label-input" placeholder="Price label (e.g. From ₹1.44 Cr.)" value={editing.price_label} onChange={(e) => setEditing({ ...editing, price_label: e.target.value })} className="px-4 py-3 text-sm" />
               <input data-testid="editor-price-from-input" placeholder="Price from (numeric, ₹)" value={editing.price_from ?? ""} onChange={(e) => setEditing({ ...editing, price_from: e.target.value })} className="px-4 py-3 text-sm" />
               <input data-testid="editor-towers-input" placeholder="Towers" value={editing.total_towers ?? ""} onChange={(e) => setEditing({ ...editing, total_towers: e.target.value })} className="px-4 py-3 text-sm" />

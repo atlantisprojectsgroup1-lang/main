@@ -83,7 +83,14 @@ export default function ProjectDetail() {
 
   const cover = project.images?.[0]?.url;
   const gallery = project.images || [];
-  const coverItems = gallery.map((img, i) => ({ key: i, image: img.url, title: project.name, eyebrow: img.category, subtitle: img.alt }));
+  const ytId = (url = "") => (url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([\w-]{6,})/) || [])[1];
+  const coverItems = [
+    ...gallery.map((img, i) => ({ key: `img-${i}`, image: img.url, title: project.name, eyebrow: img.category, subtitle: img.alt })),
+    ...(project.videos || []).map((v, i) => {
+      const yt = ytId(v.url);
+      return { key: `vid-${i}`, image: yt ? `https://img.youtube.com/vi/${yt}/hqdefault.jpg` : "", title: v.title || "Project Video", eyebrow: "VIDEO", video: { ...v, yt } };
+    }),
+  ];
   const amenityGroups = {};
   (project.amenities || []).forEach((a) => { (amenityGroups[a.group] = amenityGroups[a.group] || []).push(a); });
 
@@ -95,14 +102,14 @@ export default function ProjectDetail() {
   };
 
   const subnav = [
+    ...(coverItems.length > 0 ? [["Showcase", "showcase", "detail-nav-showcase"]] : []),
+    ...(project.videos?.length > 0 ? [["Videos", "videos", "detail-nav-videos"]] : []),
     ["Overview", "overview", "detail-nav-overview"],
-    ["Showcase", "showcase", "detail-nav-showcase"],
-    ["Gallery", "gallery", "detail-nav-gallery"],
-    ["Videos", "videos", "detail-nav-videos"],
-    ["Downloads", "downloads", "detail-nav-downloads"],
-    ["Amenities", "amenities", "detail-nav-amenities"],
-    ["Specifications", "specs", "detail-nav-specs"],
+    ...(project.documents?.length > 0 ? [["Downloads", "downloads", "detail-nav-downloads"]] : []),
+    ...(Object.keys(amenityGroups).length > 0 ? [["Amenities", "amenities", "detail-nav-amenities"]] : []),
+    ...(project.specifications?.length > 0 ? [["Specifications", "specs", "detail-nav-specs"]] : []),
     ["Location", "location", "detail-nav-location"],
+    ...(project.faqs?.length > 0 ? [["FAQs", "faqs", "detail-nav-faqs"]] : []),
     ["Enquire", "enquire", "detail-nav-enquire"],
   ];
 
@@ -144,6 +151,52 @@ export default function ProjectDetail() {
           ))}
         </div>
       </div>
+
+      {/* 3D Showcase */}
+      {coverItems.length > 0 && (
+        <section id="showcase" className="py-16 lg:py-24 bg-[#0A1322]/50 overflow-hidden scroll-mt-32">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10">
+            <p className="eyebrow mb-3">3D Showcase</p>
+            <h2 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight">A <span className="gold-text italic">Closer Look</span></h2>
+          </div>
+          <Coverflow items={coverItems} testid="project-3d-showcase" onSelect={(item) => (item.video ? setVideoPlayer(item.video) : setLightbox(item.image))} />
+        </section>
+      )}
+
+      {/* Gallery removed — images & videos live in the 3D Showcase above */}
+
+      {/* Videos */}
+      {project.videos?.length > 0 && (
+        <section id="videos" className="py-16 lg:py-24 bg-[#0A1322]/50 scroll-mt-32">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p className="eyebrow mb-3">Watch</p>
+            <h2 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight mb-10">Video <span className="gold-text italic">Gallery</span></h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {project.videos.map((v, i) => {
+                const yt = ytId(v.url);
+                return (
+                  <button key={i} data-testid={`video-card-${i}`} onClick={() => setVideoPlayer({ ...v, yt })}
+                    className="group relative h-56 img-frame text-left">
+                    {yt ? (
+                      <img src={`https://img.youtube.com/vi/${yt}/hqdefault.jpg`} alt={v.title || "Project video"} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                    ) : (
+                      <video src={v.url} muted preload="metadata" className="w-full h-full object-cover" />
+                    )}
+                    <div className="absolute inset-0 bg-[#050B14]/40 flex items-center justify-center">
+                      <span className="w-14 h-14 rounded-full glass-card border-[#D4AF37]/60 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <Play size={20} className="text-[#F3E5AB] ml-0.5" fill="currentColor" />
+                      </span>
+                    </div>
+                    <div className="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-[#050B14] to-transparent">
+                      <p className="text-sm text-slate-200">{v.title || "Project video"}</p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Overview */}
       <section id="overview" className="py-16 lg:py-24 scroll-mt-32">
@@ -200,68 +253,6 @@ export default function ProjectDetail() {
           </div>
         </div>
       </section>
-
-      {/* 3D Showcase */}
-      {coverItems.length > 1 && (
-        <section id="showcase" className="py-16 lg:py-24 bg-[#0A1322]/50 overflow-hidden scroll-mt-32">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10">
-            <p className="eyebrow mb-3">3D Showcase</p>
-            <h2 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight">A <span className="gold-text italic">Closer Look</span></h2>
-          </div>
-          <Coverflow items={coverItems} testid="project-3d-showcase" onSelect={(item) => setLightbox(item.image)} />
-        </section>
-      )}
-
-      {/* Gallery */}
-      {gallery.length > 0 && (
-        <section id="gallery" className="py-16 lg:py-24 scroll-mt-32">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <p className="eyebrow mb-3">Gallery</p>
-            <h2 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight mb-10">Imagery</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {gallery.map((img, i) => (
-                <button key={i} data-testid={`gallery-thumb-${i}`} onClick={() => setLightbox(img.url)} className="group relative h-64 overflow-hidden border border-[#C5A059]/20">
-                  <img src={img.url} alt={img.alt} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#050B14]/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                </button>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Videos */}
-      {project.videos?.length > 0 && (
-        <section id="videos" className="py-16 lg:py-24 scroll-mt-32">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <p className="eyebrow mb-3">Watch</p>
-            <h2 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight mb-10">Video <span className="gold-text italic">Gallery</span></h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {project.videos.map((v, i) => {
-                const yt = (v.url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([\w-]{6,})/) || [])[1];
-                return (
-                  <button key={i} data-testid={`video-card-${i}`} onClick={() => setVideoPlayer({ ...v, yt })}
-                    className="group relative h-56 overflow-hidden border border-[#C5A059]/20 text-left hover:border-[#D4AF37]/50 transition-colors">
-                    {yt ? (
-                      <img src={`https://img.youtube.com/vi/${yt}/hqdefault.jpg`} alt={v.title || "Project video"} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                    ) : (
-                      <video src={v.url} muted preload="metadata" className="w-full h-full object-cover" />
-                    )}
-                    <div className="absolute inset-0 bg-[#050B14]/40 flex items-center justify-center">
-                      <span className="w-14 h-14 rounded-full glass-card border-[#D4AF37]/60 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <Play size={20} className="text-[#F3E5AB] ml-0.5" fill="currentColor" />
-                      </span>
-                    </div>
-                    <div className="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-[#050B14] to-transparent">
-                      <p className="text-sm text-slate-200">{v.title || "Project video"}</p>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Downloads */}
       {project.documents?.length > 0 && (
@@ -394,7 +385,7 @@ export default function ProjectDetail() {
 
       {/* FAQs */}
       {project.faqs?.length > 0 && (
-        <section id="faqs" className="py-16 lg:py-24 bg-[#0A1322]/50">
+        <section id="faqs" className="py-16 lg:py-24 bg-[#0A1322]/50 scroll-mt-32">
           <div className="max-w-4xl mx-auto px-4 sm:px-6">
             <p className="eyebrow mb-3">Questions</p>
             <h2 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight mb-10">Before You <span className="gold-text italic">Visit</span></h2>

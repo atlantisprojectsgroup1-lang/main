@@ -1,0 +1,45 @@
+{
+  "summary": "Frontend-only regression for iteration 4. Verified gallery removal, home heading change, showcase interactivity — all pass. However, the dynamic subnav feature described in the review request is NOT implemented — subnav in ProjectDetail.jsx is a hardcoded array of 8 items, causing broken anchor links (Videos/Downloads) on projects lacking that data, and missing FAQs link on projects that do have FAQs.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "ProjectDetail subnav",
+        "issue": "Sticky subnav is hardcoded to 8 items (Showcase, Videos, Overview, Downloads, Amenities, Specifications, Location, Enquire) instead of dynamically reflecting available sections. On /projects/atlantis-grand it should list Showcase, Overview, Amenities, Specifications, Location, FAQs, Enquire (no Videos/Downloads/Gallery, but WITH FAQs). On /projects/atlantis-at-wave it should list only Showcase, Overview, Location, Enquire. Testing confirmed both pages show the same static 8-item nav. FAQs is never linked in subnav (missing from hardcoded list entirely).",
+        "selector": "[data-testid='project-detail-subnav']",
+        "priority": "CRITICAL"
+      },
+      {
+        "component": "ProjectDetail subnav",
+        "issue": "Broken anchor links: 'Videos' (#videos) and 'Downloads' (#downloads) links exist on projects without video/document data (e.g. atlantis-grand, atlantis-at-wave). Confirmed via getElementById -> false. Clicking these links scrolls to nothing.",
+        "selector": "[data-testid='detail-nav-videos'], [data-testid='detail-nav-downloads']",
+        "priority": "HIGH"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "Page load — all routes",
+        "issue": "Two 401 responses logged in browser console on every page (home + project details). Non-blocking but indicates an unauthenticated API call being made from the public site.",
+        "affected_selectors": []
+      }
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Implement dynamic subnav in /app/frontend/src/pages/ProjectDetail.jsx: build the subnav array conditionally based on data (Showcase iff coverItems.length>0, Videos iff project.videos?.length>0, Downloads iff project.documents?.length>0, Amenities iff amenityGroups keys>0, Specifications iff project.specifications?.length>0, FAQs iff project.faqs?.length>0; Overview/Location/Enquire always). Also add FAQs testid detail-nav-faqs and give the FAQs section scroll-mt-32.",
+    "Investigate the two 401 console errors present on every page load."
+  ],
+  "critical_code_review_comments": [
+    "ProjectDetail.jsx L104-113: subnav is a static array — the 'dynamic subnav' feature claimed in the change description was never implemented.",
+    "FAQs section (#faqs) has no scroll-mt-32 class (all other sections do) and no corresponding subnav entry.",
+    "Coverflow onSelect click on center slide requires drag.moved to be false, which is fine, but the pause-on-mouse-enter behaviour makes auto-advance testing flaky in headless — worked correctly once mouse moved off region."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "not tested", "frontend": "60%"},
+  "seed_data_creation": "none",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "After main agent implements dynamic subnav: verify (a) atlantis-grand subnav = [Showcase, Overview, Amenities, Specifications, Location, FAQs, Enquire], (b) atlantis-at-wave subnav = [Showcase, Overview, Location, Enquire], (c) every subnav href points to an existing section (document.getElementById check), (d) FAQs testid exists with scroll-mt-32. Gallery removal, home heading, and showcase interactivity are already verified working — no need to retest those unless code changes.",
+  "rca of the issue": "Root cause: The `subnav` constant in ProjectDetail.jsx (lines 104-113) is a hardcoded list of 8 items and is not filtered by data availability. The commit that removed the Gallery section did not include the promised conditional-subnav logic. Additionally FAQs was never added to the subnav list even though the FAQs section is rendered conditionally."
+}

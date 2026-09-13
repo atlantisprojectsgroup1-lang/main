@@ -7,7 +7,7 @@ const LINKS = [
   { to: "/projects", label: "Projects", testid: "nav-link-projects" },
   { to: "/portfolio", label: "Portfolio", testid: "nav-link-portfolio" },
   { to: "/about", label: "About Us", testid: "nav-link-about" },
-  { to: "/blog", label: "Insights", testid: "nav-link-blog" },
+  { to: "/blog", label: "Blogs", testid: "nav-link-blog" },
   { to: "/contact", label: "Contact Us", testid: "nav-link-contact" },
 ];
 

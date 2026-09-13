@@ -94,7 +94,7 @@ export default function About() {
                     <h3 className="font-serif text-xl mt-1">{m.title}</h3>
                     <p className="text-sm text-slate-400 mt-2 max-w-xl leading-relaxed">{m.description}</p>
                   </div>
-                  {m.image && <img src={m.image} alt={m.title} className="w-full sm:w-56 h-36 object-cover border border-[#C5A059]/20" loading="lazy" />}
+                  {m.image && <img src={m.image} alt={m.title} className="w-full sm:w-56 h-36 object-cover img-frame" loading="lazy" />}
                 </motion.div>
               ))}
             </div>
@@ -117,7 +117,7 @@ export default function About() {
                   {teamGroups[group].map((m, i) => (
                     <motion.div key={m.id || i} {...fade} data-testid={`team-card-${(m.id || `${group}-${i}`).toString().replace(/\W+/g, "-").toLowerCase()}`} className="glass-card overflow-hidden group">
                       {m.photo && (
-                        <div className="h-72 overflow-hidden">
+                        <div className="h-72 img-frame">
                           <img src={m.photo} alt={m.name} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                         </div>
                       )}
