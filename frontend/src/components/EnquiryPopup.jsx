@@ -6,12 +6,14 @@ import api, { formatApiError } from "../lib/api";
 export default function EnquiryPopup() {
   const [open, setOpen] = useState(false);
   const [projects, setProjects] = useState([]);
-  const [form, setForm] = useState({ name: "", phone: "", email: "", project: "", budget: "", message: "" });
+  const [types, setTypes] = useState([]);
+  const [form, setForm] = useState({ name: "", phone: "", email: "", project: "", ptype: "", budget: "", message: "" });
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
 
   useEffect(() => {
     api.get("/projects").then((r) => setProjects(r.data)).catch(() => {});
+    api.get("/projects/meta/filters").then((r) => setTypes(r.data?.types || [])).catch(() => {});
     const show = () => setOpen(true);
     window.addEventListener("open-enquiry-popup", show);
     let t;
@@ -37,7 +39,7 @@ export default function EnquiryPopup() {
       await api.post("/leads", {
         name: form.name, phone: form.phone, email: form.email, message: form.message,
         project_id: form.project, project_name: proj?.name || "",
-        budget: form.budget, source: "enquiry_popup",
+        budget: form.budget, config_interest: form.ptype, source: "enquiry_popup",
       });
       setDone(true);
       toast.success("Enquiry received. Our team will reach out within 24 hours.");
@@ -88,6 +90,10 @@ export default function EnquiryPopup() {
                   <option value="3cr-plus">₹3 Cr+</option>
                 </select>
               </div>
+              <select data-testid="popup-enquiry-ptype-select" value={form.ptype} onChange={(e) => setForm({ ...form, ptype: e.target.value })} className="w-full px-3.5 py-3 text-xs">
+                <option value="">Property Type — Any</option>
+                {types.map((t) => <option key={t} value={t}>{t}</option>)}
+              </select>
               <input data-testid="popup-enquiry-name-input" required placeholder="Your name" value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full px-4 py-3 text-sm" />
               <input data-testid="popup-enquiry-phone-input" required placeholder="Mobile number" value={form.phone}

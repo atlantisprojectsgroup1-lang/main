@@ -72,10 +72,10 @@ export default function ChatWidget() {
 
   return (
     <>
-      <button data-testid="ai-concierge-toggle-btn" onClick={() => setOpen(!open)} aria-label="AI Concierge"
+      <button data-testid="ai-concierge-toggle-btn" onClick={() => setOpen(!open)} aria-label={open ? "Close AI Concierge" : "AI Concierge"}
         className="fixed bottom-6 right-6 z-50 h-14 px-5 rounded-full glass-card border-[#D4AF37]/50 flex items-center gap-2 text-[#E6C687] hover:border-[#D4AF37] transition-all duration-300 animate-pulse-gold">
-        <Sparkles size={18} />
-        <span className="text-[0.65rem] font-mono uppercase tracking-[0.2em] hidden sm:inline">AI Concierge</span>
+        {open ? <X size={18} /> : <Sparkles size={18} />}
+        <span className="text-[0.65rem] font-mono uppercase tracking-[0.2em] hidden sm:inline">{open ? "Close" : "AI Concierge"}</span>
       </button>
 
       {open && (

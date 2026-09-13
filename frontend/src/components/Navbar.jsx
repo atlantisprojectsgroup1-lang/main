@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Menu, X, Lock, ChevronDown, Phone } from "lucide-react";
 import api from "../lib/api";
 
@@ -22,7 +22,6 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [phone, setPhone] = useState("+91 97083 97083");
-  const navigate = useNavigate();
 
   useEffect(() => {
     api.get("/company").then((r) => setPhone(r.data?.phones?.primary || "+91 97083 97083")).catch(() => {});
@@ -76,7 +75,7 @@ export default function Navbar() {
           <Link to="/admin" data-testid="nav-link-admin" className="text-slate-500 hover:text-[#E6C687] transition-colors" title="Admin">
             <Lock size={15} />
           </Link>
-          <button data-testid="nav-cta-enquire-button" onClick={() => navigate("/contact")} className="gold-btn">Enquire</button>
+          <button data-testid="nav-cta-enquire-button" onClick={() => window.dispatchEvent(new Event("open-enquiry-popup"))} className="gold-btn">Enquire</button>
         </div>
 
         <button data-testid="nav-mobile-menu-btn" className="lg:hidden text-slate-200" onClick={() => setOpen(!open)} aria-label="Menu">
@@ -101,7 +100,7 @@ export default function Navbar() {
             <Phone size={15} /> Call {phone}
           </a>
           <Link to="/admin" data-testid="mobile-nav-link-admin" onClick={() => setOpen(false)} className="text-sm font-mono uppercase tracking-[0.2em] text-slate-500">Admin</Link>
-          <button data-testid="mobile-nav-cta-enquire" onClick={() => { setOpen(false); navigate("/contact"); }} className="gold-btn justify-center mt-2">Enquire</button>
+          <button data-testid="mobile-nav-cta-enquire" onClick={() => { setOpen(false); window.dispatchEvent(new Event("open-enquiry-popup")); }} className="gold-btn justify-center mt-2">Enquire</button>
         </div>
       )}
     </header>
