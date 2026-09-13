@@ -298,3 +298,34 @@ SETTINGS = {
     "smtp_host": "", "smtp_user": "",
     "placeholders_note": "Integration IDs are configured here by the admin. Empty values keep the corresponding feature disabled gracefully.",
 }
+
+# Specifications added for SEO depth on projects without scraped spec sheets.
+# Conservative, fact-aligned with each project's public communication; editable in Admin.
+EXTRA_SPECS = {
+    "atlantis-three-sixty": [
+        {"section": "Structure", "details": ["Earthquake-resistant RCC frame construction", "Low-density tower planning — 5 towers"]},
+        {"section": "Residences", "details": ["3 BHK, 3+1 BHK & 4+1 BHK residences", "Penthouses up to 5,320 sq.ft"]},
+        {"section": "Retail", "details": ["16 premium retail units at Basement-01", "Approx. 805 – 1,686 sq.ft each", "Direct connectivity to residential tower lobbies"]},
+        {"section": "Parking & Access", "details": ["Multi-level car parking", "Lobby-level access from retail floor"]},
+        {"section": "Location", "details": ["PR-7 International Airport Road, Zirakpur", "10 min to Chandigarh International Airport", "5 min to NH-44 expressway"]},
+    ],
+    "the-marq-by-atlantis": [
+        {"section": "Location", "details": ["Sector 82, Airport Road, Mohali", "Opposite Ambika La Parisian, near Marbella Grand"]},
+        {"section": "Connectivity", "details": ["5 min to Chandigarh International Airport", "10 min to IT City / Infosys campus", "5 min to Amity University"]},
+        {"section": "Status", "details": ["Upcoming launch by Atlantis Group", "Detailed specifications to be announced"]},
+    ],
+    "atlantis-central-park": [
+        {"section": "Residences", "details": ["Signature 4 BHK residences", "Tower B — rising 22 floors above Aerocity"]},
+        {"section": "Location", "details": ["Block-1, Aerocity, SAS Nagar Mohali", "Opposite Aerovista"]},
+        {"section": "Connectivity", "details": ["8 min to Chandigarh International Airport", "High-growth investment corridor"]},
+    ],
+    "atlantis-heights": [
+        {"section": "Design", "details": ["Zirakpur's first elevated sky walk", "Forest-facing residences"]},
+        {"section": "Green Living", "details": ["65+ acres of surrounding greenery", "Crafted for light, air and open views"]},
+        {"section": "Residences", "details": ["2 & 3 BHK premium homes", "From ₹1.53 Cr."]},
+    ],
+    "atlantis-at-wave": [
+        {"section": "Status", "details": ["Delivered July 2021", "Fully sold out"]},
+        {"section": "Planning", "details": ["Stylish homes in a prime Zirakpur location", "On-time handover by Atlantis Group"]},
+    ],
+}

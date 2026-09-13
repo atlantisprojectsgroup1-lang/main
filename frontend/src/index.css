@@ -196,3 +196,13 @@ select option { background-color: #101B2E; color: #F8FAFC; }
 .leaflet-control-attribution { background: rgba(5, 11, 20, 0.7) !important; color: #475569 !important; font-size: 9px !important; }
 .leaflet-control-attribution a { color: #64748B !important; }
 .leaflet-control-zoom a { background: #101B2E !important; color: #E6C687 !important; border-color: rgba(197, 160, 89, 0.3) !important; }
+
+@keyframes ticker-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+.ticker-track { animation: ticker-scroll 26s linear infinite; }
+.ticker-track:hover { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+    .ticker-track { animation: none; }
+}

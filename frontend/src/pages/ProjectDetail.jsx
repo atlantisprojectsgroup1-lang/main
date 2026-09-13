@@ -6,6 +6,7 @@ import api from "../lib/api";
 import SEO from "../components/SEO";
 import Coverflow from "../components/Coverflow";
 import EnquiryForm from "../components/EnquiryForm";
+import TickerBar from "../components/TickerBar";
 
 const LANDMARK_ICONS = { airport: Plane, transport: Train, school: GraduationCap, hospital: Hospital, mall: ShoppingBag, highway: Navigation };
 
@@ -254,30 +255,13 @@ export default function ProjectDetail() {
         </div>
       </section>
 
-      {/* Downloads */}
-      {project.documents?.length > 0 && (
-        <section id="downloads" className="py-16 lg:py-24 bg-[#0A1322]/50 scroll-mt-32">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <p className="eyebrow mb-3">Documents</p>
-            <h2 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight mb-10">Brochures & <span className="gold-text italic">Downloads</span></h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {project.documents.map((d, i) => (
-                <a key={i} data-testid={`download-doc-${i}`} href={d.url} target="_blank" rel="noopener noreferrer" download
-                  className="glass-card p-5 flex items-center gap-4 hover:border-[#D4AF37]/50 transition-colors group">
-                  <span className="w-11 h-11 border border-[#C5A059]/40 flex items-center justify-center shrink-0">
-                    <FileText size={18} className="text-[#D4AF37]" />
-                  </span>
-                  <span className="flex-1 min-w-0">
-                    <span className="block text-sm text-slate-200 truncate">{d.name}</span>
-                    <span className="block text-[0.6rem] font-mono text-slate-500 uppercase tracking-wider mt-0.5">PDF · Instant Download</span>
-                  </span>
-                  <Download size={16} className="text-slate-500 group-hover:text-[#E6C687] transition-colors shrink-0" />
-                </a>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      <TickerBar testid="project-ticker-bar" items={[
+        project.name, project.status?.replace(/_/g, " "), project.price_label,
+        project.possession ? `Possession: ${project.possession}` : "",
+        ...(project.configs || []).map((c) => c.config),
+        project.rera_number ? `RERA ${project.rera_number}` : "RERA Registered",
+        `${project.locality}${project.locality && project.city ? ", " : ""}${project.city}`,
+      ].filter(Boolean)} />
 
       {/* Inventory / Price */}
       {project.configs?.length > 0 && (
@@ -309,6 +293,31 @@ export default function ProjectDetail() {
                   ))}
                 </tbody>
               </table>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Downloads */}
+      {project.documents?.length > 0 && (
+        <section id="downloads" className="py-12 lg:py-16 bg-[#0A1322]/50 scroll-mt-32">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p className="eyebrow mb-3">Documents</p>
+            <h2 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight mb-10">Brochures & <span className="gold-text italic">Downloads</span></h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {project.documents.map((d, i) => (
+                <a key={i} data-testid={`download-doc-${i}`} href={d.url} target="_blank" rel="noopener noreferrer" download
+                  className="glass-card p-5 flex items-center gap-4 hover:border-[#D4AF37]/50 transition-colors group">
+                  <span className="w-11 h-11 border border-[#C5A059]/40 flex items-center justify-center shrink-0">
+                    <FileText size={18} className="text-[#D4AF37]" />
+                  </span>
+                  <span className="flex-1 min-w-0">
+                    <span className="block text-sm text-slate-200 truncate">{d.name}</span>
+                    <span className="block text-[0.6rem] font-mono text-slate-500 uppercase tracking-wider mt-0.5">PDF · Instant Download</span>
+                  </span>
+                  <Download size={16} className="text-slate-500 group-hover:text-[#E6C687] transition-colors shrink-0" />
+                </a>
+              ))}
             </div>
           </div>
         </section>

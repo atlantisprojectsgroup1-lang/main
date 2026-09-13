@@ -20,7 +20,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, Field
 from typing import Optional, List
 
-from seed_data import COMPANY, PROJECTS, FAQS, BLOG, TESTIMONIALS, SETTINGS, TEAM, UPDATES
+from seed_data import COMPANY, PROJECTS, FAQS, BLOG, TESTIMONIALS, SETTINGS, TEAM, UPDATES, EXTRA_SPECS
 
 mongo_url = os.environ["MONGO_URL"]
 client = AsyncIOMotorClient(mongo_url)
@@ -675,6 +675,20 @@ async def startup():
     if await db.team.count_documents({}) == 0:
         await db.team.insert_many([dict(t) for t in TEAM])
         logger.info(f"Seeded {len(TEAM)} team members")
+
+    # Enrichment: SEO specifications + brochure download for every project
+    for pid, specs in EXTRA_SPECS.items():
+        await db.projects.update_one(
+            {"id": pid, "$or": [{"specifications": {"$exists": False}}, {"specifications": {"$size": 0}}]},
+            {"$set": {"specifications": specs}},
+        )
+    brochure_dir = ROOT_DIR / "uploads"
+    async for p in db.projects.find({}, {"id": 1, "documents": 1}):
+        if not p.get("documents") and (brochure_dir / f"brochure-{p['id']}.pdf").exists():
+            await db.projects.update_one(
+                {"id": p["id"]},
+                {"$set": {"documents": [{"name": "E-Brochure", "url": f"/api/uploads/brochure-{p['id']}.pdf", "category": "BROCHURE"}]}},
+            )
 
 
 @app.on_event("shutdown")
