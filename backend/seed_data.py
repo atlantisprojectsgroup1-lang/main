@@ -189,7 +189,7 @@ PROJECTS = [
         "id": "atlantis-grand", "name": "Atlantis Grand", "slug": "atlantis-grand",
         "tagline": "Low-density luxury on High Ground Road — Possession 2026",
         "description": "Atlantis Grand is a premium residential community on a 110 ft. prime road at High Ground Road, Zirakpur. Spread over 7+ acres of 100% owned land with 11 beautifully designed towers, ~30% lush greenery and Mivan formwork construction, it offers 3 BHK luxury residences and Sky Villas built to a 33-storey earthquake-resistant RCC standard — from ₹1.44 Cr.",
-        "status": "ONGOING", "category": "RESIDENTIAL", "project_type": ["Apartments", "Villas"],
+        "status": "ONGOING", "category": "RESIDENTIAL", "project_type": ["Apartments", "Low-rise Floors"],
         "rera_number": "", "rera_qr_image": "",
         "city": "Zirakpur", "locality": "High Ground Road", "address": "High Ground Road, Zirakpur, Punjab",
         "total_area": "7+ acres", "total_towers": 11, "floors": 33, "possession": "2026", "completion_percentage": None,
