@@ -15,6 +15,7 @@ Production-ready, SEO-optimized, AI-assisted platform for ATLANTIS (real estate 
 - Seeded from real scraped data: 6 projects (Three Sixty, The Marq, Central Park, Grand, Heights, at Wave), company profile, 5 leadership profiles, 10 design partners, 3 FAQs, 6 blog posts, Grand specs/amenities/landmarks
 
 ## Implemented (June 12, 2026)
+- Enquiry popup Property Type is now project-aware: options come from the selected project's `project_type` array (e.g. Grand → Apartments/Villas; Three Sixty → Apartments/Showrooms); falls back to the global types list when no project is selected; changing project resets the ptype selection. EnquiryForm.jsx untouched (no ptype field there).
 - Enquiry popup field order swapped per user request: Property Type now sits in the top two-column row next to Budget; Project moved to the full-width row below. data-testids unchanged (tied to field, not position).
 - Enquiry popup resized: was near-fullscreen on small screens — now w-[92%] max-w-sm sm:max-w-md with max-h-[88vh] + internal scroll, tighter padding (p-5 sm:p-6), smaller logo/header, compact fields (py-2.5, space-y-2.5). Verified desktop + mobile screenshots: clear backdrop margins all around, close button accessible.
 - Project card focus fix: removed the sharp browser focus rectangle on project cards (ProjectCard.jsx Link now rounded-2xl + focus:outline-none with rounded gold focus-visible ring + ring-offset) — cards fully rounded, no rectangle edges at image corners when clicked/selected. Verified via focused-card screenshot on /projects.

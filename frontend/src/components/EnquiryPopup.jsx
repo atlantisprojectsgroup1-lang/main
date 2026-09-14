@@ -50,6 +50,10 @@ export default function EnquiryPopup() {
     }
   };
 
+  const selectedProj = projects.find((p) => p.id === form.project);
+  const projTypes = selectedProj?.project_type;
+  const availableTypes = Array.isArray(projTypes) && projTypes.length ? projTypes : types;
+
   if (!open) return null;
 
   return (
@@ -80,7 +84,7 @@ export default function EnquiryPopup() {
               <div className="grid grid-cols-2 gap-2.5">
                 <select data-testid="popup-enquiry-ptype-select" value={form.ptype} onChange={(e) => setForm({ ...form, ptype: e.target.value })} className="px-3 py-2.5 text-xs">
                   <option value="">Property Type — Any</option>
-                  {types.map((t) => <option key={t} value={t}>{t}</option>)}
+                  {availableTypes.map((t) => <option key={t} value={t}>{t}</option>)}
                 </select>
                 <select data-testid="popup-enquiry-budget-select" value={form.budget} onChange={(e) => setForm({ ...form, budget: e.target.value })} className="px-3 py-2.5 text-xs">
                   <option value="">Budget — Any</option>
@@ -90,7 +94,7 @@ export default function EnquiryPopup() {
                   <option value="3cr-plus">₹3 Cr+</option>
                 </select>
               </div>
-              <select data-testid="popup-enquiry-project-select" value={form.project} onChange={(e) => setForm({ ...form, project: e.target.value })} className="w-full px-3 py-2.5 text-xs">
+              <select data-testid="popup-enquiry-project-select" value={form.project} onChange={(e) => setForm({ ...form, project: e.target.value, ptype: "" })} className="w-full px-3 py-2.5 text-xs">
                 <option value="">Project — Any</option>
                 {projects.map((p) => <option key={p.id} value={p.id}>{p.name} · {p.city}</option>)}
               </select>
