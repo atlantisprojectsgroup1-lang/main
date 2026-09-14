@@ -17,19 +17,17 @@ export default function EnquiryPopup() {
     const show = () => setOpen(true);
     window.addEventListener("open-enquiry-popup", show);
     let t;
-    if (!sessionStorage.getItem("atlantis_popup_seen")) {
+    const seen = Number(localStorage.getItem("atlantis_popup_seen") || 0);
+    if (Date.now() - seen > 24 * 60 * 60 * 1000) {
       t = setTimeout(() => {
         setOpen(true);
-        sessionStorage.setItem("atlantis_popup_seen", "1");
+        localStorage.setItem("atlantis_popup_seen", String(Date.now()));
       }, 1800);
     }
     return () => { clearTimeout(t); window.removeEventListener("open-enquiry-popup", show); };
   }, []);
 
-  const close = () => {
-    setOpen(false);
-    sessionStorage.setItem("atlantis_popup_seen", "1");
-  };
+  const close = () => setOpen(false);
 
   const submit = async (e) => {
     e.preventDefault();
