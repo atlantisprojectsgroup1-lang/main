@@ -78,9 +78,9 @@ export default function EnquiryPopup() {
           ) : (
             <form data-testid="enquiry-popup-form" onSubmit={submit} className="space-y-2.5">
               <div className="grid grid-cols-2 gap-2.5">
-                <select data-testid="popup-enquiry-project-select" value={form.project} onChange={(e) => setForm({ ...form, project: e.target.value })} className="px-3 py-2.5 text-xs">
-                  <option value="">Project — Any</option>
-                  {projects.map((p) => <option key={p.id} value={p.id}>{p.name} · {p.city}</option>)}
+                <select data-testid="popup-enquiry-ptype-select" value={form.ptype} onChange={(e) => setForm({ ...form, ptype: e.target.value })} className="px-3 py-2.5 text-xs">
+                  <option value="">Property Type — Any</option>
+                  {types.map((t) => <option key={t} value={t}>{t}</option>)}
                 </select>
                 <select data-testid="popup-enquiry-budget-select" value={form.budget} onChange={(e) => setForm({ ...form, budget: e.target.value })} className="px-3 py-2.5 text-xs">
                   <option value="">Budget — Any</option>
@@ -90,9 +90,9 @@ export default function EnquiryPopup() {
                   <option value="3cr-plus">₹3 Cr+</option>
                 </select>
               </div>
-              <select data-testid="popup-enquiry-ptype-select" value={form.ptype} onChange={(e) => setForm({ ...form, ptype: e.target.value })} className="w-full px-3 py-2.5 text-xs">
-                <option value="">Property Type — Any</option>
-                {types.map((t) => <option key={t} value={t}>{t}</option>)}
+              <select data-testid="popup-enquiry-project-select" value={form.project} onChange={(e) => setForm({ ...form, project: e.target.value })} className="w-full px-3 py-2.5 text-xs">
+                <option value="">Project — Any</option>
+                {projects.map((p) => <option key={p.id} value={p.id}>{p.name} · {p.city}</option>)}
               </select>
               <input data-testid="popup-enquiry-name-input" required placeholder="Your name" value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full px-3.5 py-2.5 text-sm" />
