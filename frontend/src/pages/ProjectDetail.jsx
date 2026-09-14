@@ -221,41 +221,78 @@ export default function ProjectDetail() {
               <div id="inventory" className="mt-12 scroll-mt-32" data-testid="inventory-inline">
                 <p className="eyebrow mb-3">Inventory</p>
                 <h2 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight mb-6">Configurations & <span className="gold-text italic">Pricing</span></h2>
-                {project.zones?.length > 0 && (
-                  <div className="flex gap-2 mb-5 flex-wrap" data-testid="zone-tabs">
+                {project.zones?.length > 1 ? (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6" data-testid="zones-side-by-side">
                     {project.zones.map((z, zi) => (
-                      <button key={z.key || zi} data-testid={`zone-tab-${z.key || zi}`} onClick={() => setZone(zi)}
-                        className={`text-[0.62rem] font-mono uppercase tracking-[0.18em] px-4 py-2 border transition-all ${zone === zi ? "border-[#D4AF37] text-[#F3E5AB] bg-[#D4AF37]/10" : "border-slate-700 text-slate-400 hover:border-[#C5A059]/50"}`}>
-                        {z.label}
-                      </button>
+                      <div key={z.key || zi} data-testid={`zone-panel-${z.key || zi}`}>
+                        <p className="inline-block text-[0.62rem] font-mono uppercase tracking-[0.18em] px-4 py-2 border border-[#D4AF37] text-[#F3E5AB] bg-[#D4AF37]/10 mb-3">{z.label}</p>
+                        <div className="glass-card overflow-x-auto">
+                          <table className="w-full text-sm" data-testid={`inventory-table-${z.key || zi}`}>
+                            <thead>
+                              <tr className="border-b border-[#C5A059]/20 text-left">
+                                {["Configuration", "Area", "Price", "Availability"].map((h) => (
+                                  <th key={h} className="px-4 py-3 text-[0.6rem] font-mono uppercase tracking-[0.18em] text-slate-400 font-medium">{h}</th>
+                                ))}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {(z.configs || []).map((c, i) => (
+                                <tr key={i} data-testid={`inventory-row-${z.key || zi}-${i}`} className="border-b border-slate-800/60 hover:bg-[#D4AF37]/5 transition-colors">
+                                  <td className="px-4 py-3 font-serif text-base">{c.config}</td>
+                                  <td className="px-4 py-3 text-slate-400 text-xs">{c.area || "—"}</td>
+                                  <td className="px-4 py-3 gold-text font-serif text-base">{c.price_label}</td>
+                                  <td className="px-4 py-3">
+                                    <span className={`text-[0.58rem] font-mono uppercase tracking-[0.16em] px-2 py-0.5 border ${c.availability === "AVAILABLE" ? "border-emerald-500/40 text-emerald-400" : c.availability === "FEW_LEFT" ? "border-amber-500/40 text-amber-400" : "border-slate-600 text-slate-500"}`}>
+                                      {(c.availability || "").replace("_", " ") || "—"}
+                                    </span>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
                     ))}
                   </div>
-                )}
-                <div className="glass-card overflow-x-auto">
-                  <table className="w-full text-sm" data-testid="inventory-table">
-                    <thead>
-                      <tr className="border-b border-[#C5A059]/20 text-left">
-                        {["Configuration", "Area", "Price", "Availability"].map((h) => (
-                          <th key={h} className="px-4 py-3 text-[0.6rem] font-mono uppercase tracking-[0.18em] text-slate-400 font-medium">{h}</th>
+                ) : (
+                  <>
+                    {project.zones?.length > 0 && (
+                      <div className="flex gap-2 mb-5 flex-wrap" data-testid="zone-tabs">
+                        {project.zones.map((z, zi) => (
+                          <button key={z.key || zi} data-testid={`zone-tab-${z.key || zi}`} onClick={() => setZone(zi)}
+                            className={`text-[0.62rem] font-mono uppercase tracking-[0.18em] px-4 py-2 border transition-all ${zone === zi ? "border-[#D4AF37] text-[#F3E5AB] bg-[#D4AF37]/10" : "border-slate-700 text-slate-400 hover:border-[#C5A059]/50"}`}>
+                            {z.label}
+                          </button>
                         ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {(project.zones?.length > 0 ? project.zones[zone]?.configs || [] : project.configs || []).map((c, i) => (
-                        <tr key={i} data-testid={`inventory-row-${i}`} className="border-b border-slate-800/60 hover:bg-[#D4AF37]/5 transition-colors">
-                          <td className="px-4 py-3 font-serif text-base">{c.config}</td>
-                          <td className="px-4 py-3 text-slate-400 text-xs">{c.area || "—"}</td>
-                          <td className="px-4 py-3 gold-text font-serif text-base">{c.price_label}</td>
-                          <td className="px-4 py-3">
-                            <span className={`text-[0.58rem] font-mono uppercase tracking-[0.16em] px-2 py-0.5 border ${c.availability === "AVAILABLE" ? "border-emerald-500/40 text-emerald-400" : c.availability === "FEW_LEFT" ? "border-amber-500/40 text-amber-400" : "border-slate-600 text-slate-500"}`}>
-                              {(c.availability || "").replace("_", " ") || "—"}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                      </div>
+                    )}
+                    <div className="glass-card overflow-x-auto">
+                      <table className="w-full text-sm" data-testid="inventory-table">
+                        <thead>
+                          <tr className="border-b border-[#C5A059]/20 text-left">
+                            {["Configuration", "Area", "Price", "Availability"].map((h) => (
+                              <th key={h} className="px-4 py-3 text-[0.6rem] font-mono uppercase tracking-[0.18em] text-slate-400 font-medium">{h}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {(project.zones?.length > 0 ? project.zones[zone]?.configs || [] : project.configs || []).map((c, i) => (
+                            <tr key={i} data-testid={`inventory-row-${i}`} className="border-b border-slate-800/60 hover:bg-[#D4AF37]/5 transition-colors">
+                              <td className="px-4 py-3 font-serif text-base">{c.config}</td>
+                              <td className="px-4 py-3 text-slate-400 text-xs">{c.area || "—"}</td>
+                              <td className="px-4 py-3 gold-text font-serif text-base">{c.price_label}</td>
+                              <td className="px-4 py-3">
+                                <span className={`text-[0.58rem] font-mono uppercase tracking-[0.16em] px-2 py-0.5 border ${c.availability === "AVAILABLE" ? "border-emerald-500/40 text-emerald-400" : c.availability === "FEW_LEFT" ? "border-amber-500/40 text-amber-400" : "border-slate-600 text-slate-500"}`}>
+                                  {(c.availability || "").replace("_", " ") || "—"}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </>
+                )}
               </div>
             )}
             {project.placeholders?.length > 0 && (

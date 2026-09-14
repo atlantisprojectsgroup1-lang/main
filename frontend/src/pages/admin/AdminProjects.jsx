@@ -199,7 +199,7 @@ export default function AdminProjects() {
               <div className="sm:col-span-2">
                 <label className="text-[0.62rem] font-mono uppercase tracking-[0.2em] text-slate-400 block mb-2">Zones (optional) — publish Residential & Commercial in the same project. One per line: Zone Label | Config | Price | Area</label>
                 <textarea data-testid="editor-zones-input" rows={3} placeholder={"Residential Zone | 3 BHK | On Request | 1,850 sq.ft\nCommercial Zone | Showroom | On Request | 1,200 sq.ft"} value={editing.zones_text ?? ""} onChange={(e) => setEditing({ ...editing, zones_text: e.target.value })} className="w-full px-4 py-3 text-xs font-mono" />
-                <p className="text-[0.6rem] text-slate-600 mt-1.5 font-mono">When zones exist, the project page shows zone tabs (e.g. Residential Zone / Commercial Zone) above the inventory table.</p>
+                <p className="text-[0.6rem] text-slate-600 mt-1.5 font-mono">When 2+ zones exist, the project page publishes their inventories side by side (e.g. Residential Zone | Commercial Zone). A single zone shows as a tabbed table.</p>
               </div>
               <div className="sm:col-span-2">
                 <label className="text-[0.62rem] font-mono uppercase tracking-[0.2em] text-slate-400 block mb-2">Videos — one per line: YouTube or MP4 URL | Title</label>
