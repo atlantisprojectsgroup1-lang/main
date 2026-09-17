@@ -52,6 +52,7 @@ Push this repo via "Save to Github" → Vercel auto-deploys using the included `
 **One dashboard step**: in Vercel → Project → Settings → General, set the **Framework** setting to **Services** so the `services` block in `vercel.json` is honored (per Vercel's Services docs). No `REACT_APP_BACKEND_URL` needed — the frontend falls back to same-domain relative `/api` calls.
 
 ## 6. Known Vercel caveats
+- **Bundle size fixed (was: "Total bundle size 532.92 MB exceeds 500 MB")**: `backend/requirements.txt` is now a lean 9-package list (fastapi, uvicorn, motor, pymongo, pydantic, python-dotenv, bcrypt, PyJWT, openai) — the backend's true imports. The old 125-package list (pandas, numpy, boto3, google-*, pytest, mypy…) bloated the serverless bundle past Vercel's 500MB limit. Bundle is now ~100–150MB. Do NOT re-add heavy packages to requirements.txt; run one-off scripts locally instead.
 - **Uploads are ephemeral**: files uploaded via Admin (project logos, PDFs) are written to `backend/uploads/` which is read-only/ephemeral on Vercel. The 11 existing files are committed in the repo and will be served fine, but NEW uploads won't persist. When you need admin uploads on Vercel, ask me to wire Emergent Object Storage / S3 (boto3 is already in requirements).
 - **Cold starts**: the first API call after idle may take 2–5s (serverless warm-up). The DB indexes and admin seeding run on startup.
 - **Background tasks**: lead AI-scoring runs as a FastAPI background task — on serverless it completes within the request lifecycle; no change needed at current scale.
