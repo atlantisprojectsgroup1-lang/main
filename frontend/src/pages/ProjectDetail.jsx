@@ -147,7 +147,7 @@ export default function ProjectDetail() {
       <div data-testid="project-detail-subnav" className="sticky top-20 z-40 backdrop-blur-xl bg-[#050B14]/85 border-y border-[#C5A059]/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex gap-6 overflow-x-auto py-3.5">
           {subnav.map(([label, id, tid]) => (
-            <a key={id} href={`#${id}`} data-testid={tid} className="text-[0.62rem] font-mono uppercase tracking-[0.2em] text-slate-400 hover:text-[#E6C687] transition-colors whitespace-nowrap">
+            <a key={id} href={`#${id}`} data-testid={tid} className="text-[0.8rem] font-mono uppercase tracking-[0.18em] text-slate-400 hover:text-[#E6C687] transition-colors whitespace-nowrap">
               {label}
             </a>
           ))}

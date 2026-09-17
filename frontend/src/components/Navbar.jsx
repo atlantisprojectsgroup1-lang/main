@@ -43,19 +43,19 @@ export default function Navbar() {
 
         <nav className="hidden lg:flex items-center gap-5">
           {LINKS.map((l) => (
-            <Link key={l.to} to={l.to} data-testid={l.testid} className="text-[0.62rem] font-mono uppercase tracking-[0.16em] text-slate-300 hover:text-[#E6C687] transition-colors duration-300 whitespace-nowrap">
+            <Link key={l.to} to={l.to} data-testid={l.testid} className="text-[0.8rem] font-mono uppercase tracking-[0.14em] text-slate-300 hover:text-[#E6C687] transition-colors duration-300 whitespace-nowrap">
               {l.label}
             </Link>
           ))}
           <div className="relative group" data-testid="nav-policies-dropdown">
-            <button data-testid="nav-policies-toggle" className="flex items-center gap-1.5 text-[0.62rem] font-mono uppercase tracking-[0.16em] text-slate-300 hover:text-[#E6C687] transition-colors duration-300 whitespace-nowrap">
+            <button data-testid="nav-policies-toggle" className="flex items-center gap-1.5 text-[0.8rem] font-mono uppercase tracking-[0.14em] text-slate-300 hover:text-[#E6C687] transition-colors duration-300 whitespace-nowrap">
               Policies <ChevronDown size={12} className="group-hover:rotate-180 transition-transform duration-300" />
             </button>
             <div className="absolute right-0 top-full pt-4 opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300">
               <div className="glass-card py-2 w-64 flex flex-col shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
                 {POLICY_LINKS.map((l) => (
                   <Link key={l.to} to={l.to} data-testid={`dropdown-${l.testid}`}
-                    className="px-5 py-3 text-[0.62rem] font-mono uppercase tracking-[0.16em] text-slate-300 hover:text-[#F3E5AB] hover:bg-[#D4AF37]/10 transition-colors">
+                    className="px-5 py-3 text-[0.75rem] font-mono uppercase tracking-[0.14em] text-slate-300 hover:text-[#F3E5AB] hover:bg-[#D4AF37]/10 transition-colors">
                     {l.label}
                   </Link>
                 ))}
