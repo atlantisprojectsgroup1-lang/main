@@ -10,8 +10,8 @@
     },
     "backend": {
       "root": "backend/",
-      "framework": "fastapi",
-      "entrypoint": "server:app"
+      "framework": "express",
+      "entrypoint": "server.js"
     }
   },
   "rewrites": [
