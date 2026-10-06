@@ -20,6 +20,18 @@ const api = express.Router();
 
 const client = new MongoClient(process.env.MONGO_URL, { serverSelectionTimeoutMS: 10000, connectTimeoutMS: 10000 });
 let db;
+let dbDown = false;
+
+// In-memory fallback so the public site keeps working if the DB is unreachable (e.g. Atlas network rules on Vercel).
+const MEM = {
+  projects: PROJECTS.map((p) => ({ ...p })),
+  company: { ...COMPANY },
+  settings: { ...SETTINGS },
+  faqs: FAQS.map((f) => ({ ...f })),
+  blog: [...BLOG.map((b) => ({ ...b })), ...UPDATES.map((u) => ({ ...u }))],
+  testimonials: TESTIMONIALS.map((t) => ({ ...t })),
+  team: TEAM.map((t) => ({ ...t })),
+};
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_ALGORITHM = "HS256";
@@ -76,6 +88,7 @@ const createAccessToken = (user) =>
   jwt.sign({ sub: user.id, email: user.email, role: user.role, type: "access" }, JWT_SECRET, { algorithm: JWT_ALGORITHM, expiresIn: "24h" });
 
 async function requireAuth(req, res, next) {
+  if (dbDown) return res.status(503).json({ detail: "Service starting, retry shortly." });
   let token = req.cookies?.access_token;
   if (!token) {
     const auth = req.headers.authorization || "";
@@ -132,12 +145,22 @@ api.get("/auth/me", requireAuth, (req, res) => res.json(req.user));
 api.get("/", (req, res) => res.json({ message: "ATLANTIS Platform API" }));
 
 api.get("/company", async (req, res) => {
+  if (dbDown) return res.json(MEM.company);
   const company = await db.collection("company").findOne({ id: "company" }, { projection: { _id: 0 } });
   res.json(company || {});
 });
 
 api.get("/projects", async (req, res) => {
   const { status, category, city, ptype, featured } = req.query;
+  if (dbDown) {
+    let list = MEM.projects;
+    if (status) list = list.filter((p) => p.status === String(status).toUpperCase());
+    if (category) list = list.filter((p) => p.category === String(category).toUpperCase());
+    if (city) list = list.filter((p) => (p.city || "").toLowerCase() === String(city).toLowerCase());
+    if (ptype) list = list.filter((p) => (p.project_type || []).some((t) => String(t).toLowerCase() === String(ptype).toLowerCase()));
+    if (featured !== undefined) list = list.filter((p) => p.featured === (featured === "true"));
+    return res.json(list);
+  }
   const q = {};
   if (status) q.status = String(status).toUpperCase();
   if (category) q.category = String(category).toUpperCase();
@@ -149,12 +172,24 @@ api.get("/projects", async (req, res) => {
 });
 
 api.get("/projects/meta/filters", async (req, res) => {
+  if (dbDown) {
+    const cities = [...new Set(MEM.projects.map((p) => p.city).filter(Boolean))].sort();
+    const types = [...new Set(MEM.projects.flatMap((p) => p.project_type || []))].sort();
+    return res.json({ cities, types });
+  }
   const cities = await db.collection("projects").distinct("city");
   const types = await db.collection("projects").distinct("project_type");
   res.json({ cities: cities.filter(Boolean).sort(), types: types.filter(Boolean).sort() });
 });
 
 api.get("/projects/:slug", async (req, res) => {
+  if (dbDown) {
+    const project = MEM.projects.find((p) => p.slug === req.params.slug);
+    if (!project) return res.status(404).json({ detail: "Project not found" });
+    const faqs = MEM.faqs.filter((f) => !f.project_id || f.project_id === project.id);
+    const similar = MEM.projects.filter((p) => p.id !== project.id && (p.city === project.city || p.category === project.category)).slice(0, 3);
+    return res.json({ ...project, faqs, similar_projects: similar });
+  }
   const project = await db.collection("projects").findOne({ slug: req.params.slug }, { projection: { _id: 0 } });
   if (!project) return res.status(404).json({ detail: "Project not found" });
   const faqs = await db.collection("faqs").find({ $or: [{ project_id: null }, { project_id: project.id }] }, { projection: { _id: 0 } }).sort({ sort_order: 1 }).limit(50).toArray();
@@ -166,6 +201,7 @@ api.get("/projects/:slug", async (req, res) => {
 });
 
 api.get("/stats", async (req, res) => {
+  if (dbDown) return res.json({ ...MEM.company.stats, total_projects: MEM.projects.length });
   const company = await db.collection("company").findOne({ id: "company" }, { projection: { _id: 0 } });
   const stats = { ...((company || {}).stats || {}) };
   stats.total_projects = await db.collection("projects").countDocuments({});
@@ -173,24 +209,41 @@ api.get("/stats", async (req, res) => {
 });
 
 api.get("/testimonials", async (req, res) => {
+  if (dbDown) return res.json(MEM.testimonials);
   res.json(await db.collection("testimonials").find({}, { projection: { _id: 0 } }).limit(50).toArray());
 });
 
 api.get("/faqs", async (req, res) => {
+  if (dbDown) return res.json(MEM.faqs);
   res.json(await db.collection("faqs").find({}, { projection: { _id: 0 } }).sort({ sort_order: 1 }).limit(100).toArray());
 });
 
 api.get("/blog", async (req, res) => {
+  if (dbDown) return res.json([...MEM.blog].sort((a, b) => String(b.published_at || "").localeCompare(String(a.published_at || ""))));
   res.json(await db.collection("blog").find({}, { projection: { _id: 0 } }).sort({ published_at: -1 }).limit(100).toArray());
 });
 
 api.get("/blog/:slug", async (req, res) => {
+  if (dbDown) {
+    const post = MEM.blog.find((b) => b.slug === req.params.slug);
+    return post ? res.json(post) : res.status(404).json({ detail: "Post not found" });
+  }
   const post = await db.collection("blog").findOne({ slug: req.params.slug }, { projection: { _id: 0 } });
   if (!post) return res.status(404).json({ detail: "Post not found" });
   res.json(post);
 });
 
 api.get("/settings/public", async (req, res) => {
+  if (dbDown) {
+    const s = MEM.settings;
+    return res.json({
+      whatsapp_number: s.whatsapp_number || "",
+      whatsapp_default_message: s.whatsapp_default_message || "",
+      meta_pixel_id: s.meta_pixel_id || "",
+      ga4_id: s.ga4_id || "",
+      gtm_id: s.gtm_id || "",
+    });
+  }
   const s = (await db.collection("settings").findOne({ id: "global" }, { projection: { _id: 0 } })) || {};
   res.json({
     whatsapp_number: s.whatsapp_number || "",
@@ -202,6 +255,7 @@ api.get("/settings/public", async (req, res) => {
 });
 
 api.get("/team", async (req, res) => {
+  if (dbDown) return res.json(MEM.team);
   res.json(await db.collection("team").find({}, { projection: { _id: 0 } }).sort({ sort_order: 1, name: 1 }).limit(200).toArray());
 });
 
@@ -236,6 +290,9 @@ api.post("/leads", async (req, res) => {
   if (!String(name).trim() || !/^[+]?[\d\s\-()]{8,15}$/.test(String(phone).trim())) {
     return res.status(422).json({ detail: "Please provide a valid name and phone number." });
   }
+  if (dbDown) {
+    return res.status(503).json({ detail: "Our enquiry desk is momentarily offline — please call +91 9041795879 or WhatsApp us directly." });
+  }
   const lead = {
     name, phone, email, project_id, project_name, message, source, budget, config_interest, utm,
     id: newId(), status: "NEW", owner: "", notes: [], lost_reason: "",
@@ -255,9 +312,9 @@ api.post("/leads", async (req, res) => {
 // ---------------- AI Chatbot (public, SSE streaming) ----------------
 
 async function buildChatContext() {
-  const company = (await db.collection("company").findOne({ id: "company" }, { projection: { _id: 0 } })) || {};
-  const projects = await db.collection("projects").find({}, { projection: { _id: 0 } }).sort({ sort_order: 1 }).limit(50).toArray();
-  const faqs = await db.collection("faqs").find({}, { projection: { _id: 0 } }).limit(50).toArray();
+  const company = dbDown ? MEM.company : ((await db.collection("company").findOne({ id: "company" }, { projection: { _id: 0 } })) || {});
+  const projects = dbDown ? MEM.projects : await db.collection("projects").find({}, { projection: { _id: 0 } }).sort({ sort_order: 1 }).limit(50).toArray();
+  const faqs = dbDown ? MEM.faqs : await db.collection("faqs").find({}, { projection: { _id: 0 } }).limit(50).toArray();
   const lines = [
     `COMPANY: ${company.brand_name} — ${company.tagline}. ${company.about_long || ""}`,
     `Offices: ${JSON.stringify(company.offices || [])}`,
@@ -276,8 +333,11 @@ async function buildChatContext() {
 api.post("/chat", async (req, res) => {
   if (!LLM_API_KEY) return res.status(503).json({ detail: "AI concierge is not configured." });
   const sessionId = String(req.body.session_id || "").replace(/[^a-zA-Z0-9-]/g, "").slice(0, 64) || newId();
-  await db.collection("chat_messages").insertOne({ id: newId(), session_id: sessionId, role: "user", content: req.body.message, created_at: nowIso() });
-  const history = await db.collection("chat_messages").find({ session_id: sessionId }, { projection: { _id: 0 } }).sort({ created_at: 1 }).limit(30).toArray();
+  let history = [];
+  if (!dbDown) {
+    await db.collection("chat_messages").insertOne({ id: newId(), session_id: sessionId, role: "user", content: req.body.message, created_at: nowIso() });
+    history = await db.collection("chat_messages").find({ session_id: sessionId }, { projection: { _id: 0 } }).sort({ created_at: 1 }).limit(30).toArray();
+  }
   const context = await buildChatContext();
   const historyText = history.slice(-12).map((m) => `${m.role.toUpperCase()}: ${m.content}`).join("\n");
 
@@ -315,7 +375,9 @@ api.post("/chat", async (req, res) => {
     console.warn("chat stream error:", e.message);
     res.write(`data: ${JSON.stringify({ token: "I apologise — I am momentarily unavailable. Please call +91 9041795879 or leave your number and we will call you back." })}\n\n`);
   }
-  await db.collection("chat_messages").insertOne({ id: newId(), session_id: sessionId, role: "assistant", content: full.join(""), created_at: nowIso() });
+  if (!dbDown) {
+    await db.collection("chat_messages").insertOne({ id: newId(), session_id: sessionId, role: "assistant", content: full.join(""), created_at: nowIso() });
+  }
   res.write("data: [DONE]\n\n");
   res.end();
 });
@@ -324,8 +386,8 @@ api.post("/chat", async (req, res) => {
 
 api.get("/sitemap.xml", async (req, res) => {
   const base = process.env.FRONTEND_URL || `${req.protocol}://${req.get("host")}`;
-  const projects = await db.collection("projects").find({}, { projection: { _id: 0, slug: 1 } }).limit(200).toArray();
-  const posts = await db.collection("blog").find({}, { projection: { _id: 0, slug: 1 } }).limit(200).toArray();
+  const projects = dbDown ? MEM.projects.map((p) => ({ slug: p.slug })) : await db.collection("projects").find({}, { projection: { _id: 0, slug: 1 } }).limit(200).toArray();
+  const posts = dbDown ? MEM.blog.map((b) => ({ slug: b.slug })) : await db.collection("blog").find({}, { projection: { _id: 0, slug: 1 } }).limit(200).toArray();
   const urls = ["", "/projects", "/portfolio", "/about", "/blog", "/contact",
     ...projects.map((p) => `/projects/${p.slug}`), ...posts.map((b) => `/blog/${b.slug}`)];
   const xml = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'];
@@ -626,8 +688,8 @@ async function start() {
 }
 
 const ready = start().catch((e) => {
-  console.error("startup failed:", e);
-  throw e;
+  dbDown = true;
+  console.error("DB unavailable — public site serving seed fallback:", e.message);
 });
 
 // Ensure DB is connected before any request (serverless-safe)
