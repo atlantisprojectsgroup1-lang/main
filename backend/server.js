@@ -18,7 +18,7 @@ const app = express();
 app.set("trust proxy", true);
 const api = express.Router();
 
-const client = new MongoClient(process.env.MONGO_URL, { serverSelectionTimeoutMS: 10000, connectTimeoutMS: 10000 });
+const client = new MongoClient(process.env.MONGO_URL || process.env.MONGODB_URI, { serverSelectionTimeoutMS: 10000, connectTimeoutMS: 10000 });
 let db;
 let dbDown = false;
 

@@ -32,7 +32,7 @@ Expect 6 projects and your current lead count.
 
 | Key | Value |
 |---|---|
-| `MONGO_URL` | `mongodb+srv://<user>:<password>@cluster0.xxxxx.mongodb.net/` |
+| `MONGO_URL` | `mongodb+srv://<user>:<password>@cluster0.xxxxx.mongodb.net/` (or rely on `MONGODB_URI` — the Vercel↔Atlas integration injects it automatically; the backend reads both) |
 | `DB_NAME` | `atlantis_db` |
 | `JWT_SECRET` | `9f2c7b1a4e6d8f0a3b5c7d9e1f2a4b6c8d0e2f4a6b8c0d2e4f6a8b0c2d4e6f8a0b` |
 | `ADMIN_EMAIL` | `atlantisprojectsgroup@gmail.com` |
