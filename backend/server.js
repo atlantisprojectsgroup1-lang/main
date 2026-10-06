@@ -62,25 +62,51 @@ const slugify = (s) => (s || "project").toLowerCase().replace(/[^a-z0-9]+/g, "-"
 const escapeRegex = (s) => String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const stripId = (doc) => { if (doc) delete doc._id; return doc; };
 
+const _rateBuckets = new Map();
+function rateLimited(key, limit, windowMs) {
+  const now = Date.now();
+  const hits = (_rateBuckets.get(key) || []).filter((t) => now - t < windowMs);
+  if (hits.length >= limit) return true;
+  hits.push(now);
+  _rateBuckets.set(key, hits);
+  return false;
+}
+
 // ---------------- CORS ----------------
 
-const corsOrigins = (process.env.CORS_ORIGINS || "*").split(",").map((o) => o.trim()).filter((o) => o && o !== "*");
+const configuredOrigins = (process.env.CORS_ORIGINS || "").split(",").map((o) => o.trim()).filter((o) => o && o !== "*");
+const ALLOWED_ORIGINS = configuredOrigins.length ? configuredOrigins : [
+  process.env.FRONTEND_URL,
+  "https://atlantisprojectsgroup.com",
+  "https://www.atlantisprojectsgroup.com",
+  process.env.REACT_APP_BACKEND_URL,
+  "http://localhost:3000",
+].filter(Boolean);
+
 app.use((req, res, next) => {
   const origin = req.headers.origin || "";
-  const allow = corsOrigins.length ? (corsOrigins.includes(origin) ? origin : "") : origin || "*";
-  if (allow) {
-    res.setHeader("Access-Control-Allow-Origin", allow);
+  if (origin && ALLOWED_ORIGINS.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Access-Control-Allow-Credentials", "true");
     res.setHeader("Vary", "Origin");
   }
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", req.headers["access-control-request-headers"] || "*");
+  res.setHeader("Access-Control-Allow-Headers", req.headers["access-control-request-headers"] || "Content-Type,Authorization");
   if (req.method === "OPTIONS") return res.sendStatus(204);
   next();
 });
 
 app.use(express.json({ limit: "25mb" }));
 app.use(cookieParser());
+
+app.use((req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "SAMEORIGIN");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  if (process.env.VERCEL) res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  next();
+});
 
 // ---------------- Auth ----------------
 
@@ -129,7 +155,7 @@ api.post("/auth/login", async (req, res) => {
   }
   await db.collection("login_attempts").deleteOne({ identifier });
   const token = createAccessToken(user);
-  res.cookie("access_token", token, { httpOnly: true, secure: true, sameSite: "none", maxAge: 86400000, path: "/" });
+  res.cookie("access_token", token, { httpOnly: true, secure: true, sameSite: "lax", maxAge: 86400000, path: "/" });
   res.json({ id: user.id, email: user.email, name: user.name || "", role: user.role, token });
 });
 
@@ -286,12 +312,18 @@ async function aiScoreLead(lead) {
 }
 
 api.post("/leads", async (req, res) => {
+  if (rateLimited(`leads:${req.ip}`, 5, 60000)) {
+    return res.status(429).json({ detail: "Too many enquiries — please wait a minute or call +91 9041795879." });
+  }
   const { name = "", phone = "", email = "", project_id = "", project_name = "", message = "", source = "website", budget = "", config_interest = "", utm = null } = req.body || {};
   if (!String(name).trim() || !/^[+]?[\d\s\-()]{8,15}$/.test(String(phone).trim())) {
     return res.status(422).json({ detail: "Please provide a valid name and phone number." });
   }
   if (dbDown) {
     return res.status(503).json({ detail: "Our enquiry desk is momentarily offline — please call +91 9041795879 or WhatsApp us directly." });
+  }
+  if (String(message).length > 2000 || String(name).length > 120) {
+    return res.status(422).json({ detail: "Input too long." });
   }
   const lead = {
     name, phone, email, project_id, project_name, message, source, budget, config_interest, utm,
@@ -331,7 +363,13 @@ async function buildChatContext() {
 }
 
 api.post("/chat", async (req, res) => {
+  if (rateLimited(`chat:${req.ip}`, 10, 60000)) {
+    return res.status(429).json({ detail: "Too many messages — please slow down or call +91 9041795879." });
+  }
   if (!LLM_API_KEY) return res.status(503).json({ detail: "AI concierge is not configured." });
+  if (String(req.body.message || "").length > 2000) {
+    return res.status(422).json({ detail: "Message too long (max 2000 characters)." });
+  }
   const sessionId = String(req.body.session_id || "").replace(/[^a-zA-Z0-9-]/g, "").slice(0, 64) || newId();
   let history = [];
   if (!dbDown) {
@@ -446,7 +484,7 @@ api.delete("/admin/projects/:pid", requireAuth, async (req, res) => {
 });
 
 api.get("/admin/leads", requireAuth, async (req, res) => {
-  const q = req.query.status ? { status: req.query.status } : {};
+  const q = req.query.status ? { status: String(req.query.status) } : {};
   res.json(await db.collection("leads").find(q, { projection: { _id: 0 } }).sort({ created_at: -1 }).limit(500).toArray());
 });
 
@@ -611,7 +649,8 @@ app.use("/api", api);
 
 app.use((err, req, res, next) => {
   console.error("unhandled:", err.message);
-  res.status(err.status || 500).json({ detail: err.message || "Internal Server Error" });
+  const status = err.status || 500;
+  res.status(status).json({ detail: status === 500 ? "Internal Server Error" : err.message });
 });
 
 // ---------------- Startup ----------------
